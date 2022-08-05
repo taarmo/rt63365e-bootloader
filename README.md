@@ -1,0 +1,1 @@
+# hg532s-bootloader

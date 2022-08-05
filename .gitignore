@@ -1,0 +1,4 @@
+./files
+*.obj
+*.o
+*.swp

@@ -1,0 +1,25 @@
+#include "config_dmc.h"
+#include "utils.h"
+#include "main_ram.h"
+#include "/usr/mips-linux-gnu/include/m32c0.h"
+#include "/usr/mips-linux-gnu/include/sys/regdef.h"
+
+extern u32 _init_text_flash, _fin_text_flash;
+extern void config_cache();
+
+__attribute__ ((section(".init_main")))
+void _main(){
+	config_dmc();
+	config_cache();
+	memcpy32(&_init_text_flash,0x80000000,&_fin_text_flash);
+	//writec0(C0_STATUS,0x0,0x0);
+	register int ivar2 asm("9") = -0x80000000;
+	do{
+		cache(ivar2,0x19);
+		sync();
+		cache(ivar2,0x10);
+		ivar2+=0x20;
+	}
+	while(ivar2 != -0x7ffe0000);
+	((void(*)()) 0x80000030)();
+}
