@@ -4,6 +4,8 @@
 #include "types.h"
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+
+void xxd(u8 *arr,int size,int col);
  
 /*#define read32(addr)       \
 	*((u32 *) addr) 

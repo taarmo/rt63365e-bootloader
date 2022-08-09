@@ -12,6 +12,7 @@ void _main() {
   
   uart_puts(buf);
   uart_printf(arr,a,*a);
+  xxd((u8 *)0xbfc00000,200,8);
   while (1){
 	  uart_read(p,10);
 	  uart_puts(p);

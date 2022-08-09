@@ -50,7 +50,7 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
 
-ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/ram.o obj/main.o obj/uart.o obj/vsprintf.o
+ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/ram.o obj/main.o obj/uart.o obj/vsprintf.o obj/utils.o
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
 SUBDIRS    = $(shell find $(SRC) -type d)
