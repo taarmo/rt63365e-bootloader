@@ -5,7 +5,7 @@ MEMORY
 	FLASH (rx) : ORIGIN = 0xbfc00000, LENGTH = 8M 
 }
 
-__stack_size = 0x800;
+__stack_size = 0x2000;
 __data_size = 0x200;
 
 ENTRY(__start)
@@ -15,12 +15,17 @@ SECTIONS
 	.init : {
 		_inits_sym = .;
 		*(.init)
-		*(.init_main) 
+		*(.init.*)
 		_inite_sym = .;
+		_sirq = .;
+		*(.text.irq)
+		_eirq = .;
 	} > FLASH
 
 	.text : {
 		_stext = .;
+		*(.text.init_main)
+		*(.text.main)
 		*(.text)
 		_etext = .;
 	} >RAM AT>FLASH

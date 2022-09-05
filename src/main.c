@@ -1,20 +1,35 @@
-#include "utils.h"
+#include "proxy.h"
 #include "uart.h"
+#include "spi.h"
+#include "utils.h"
+#include "exceptions.h"
 
 u8 *buf = "Bienvenido\n\r";
-char *arr = "La direccion es 0x%x su contenido es 0x%x\n\r";
-u32 *a = (u32 *)0xbfc00000;
-u8 p[10];
+u32 *p = 0xbfc000a4;
+u32 *q = 0xbfc000a8;
 
+
+__attribute__ ((section(".text.main")))
 void _main() {
+u32 value1 = 0;
+u32 value2;
   write32((u32 *)0xbfb40000, ((read32((u32 *)0xbfb40000)) | 0x40400));
   config_uart();
-  
-  uart_puts(buf);
-  uart_printf(arr,a,*a);
-  xxd((u8 *)0xbfc00000,200,8);
+ uart_puts(buf);
+ config_exceptions();
+ //__asm__ volatile ("j 0x80f00000"); //PROVOCAR EXCEPCION
+ value1 = build_frame(0x3,0x0);
+ uart_printf("El valor es %x\n\r",value1);
   while (1){
-	  uart_read(p,10);
-	  uart_puts(p);
+ 	 value1 = build_frame(0x3,0x00); //50
+	 //a0  --> 1a
+	 //a8  --> 9a
+	 //b0  --> 8
+	 //b8  --> 9
+ 	 uart_printf("El valor es %x\n\r",value1);
+	//uart_printf("El valor es %u\n\r",val);
+	//spi_write(0,0x1);
+	//proxy_process();
+	  //reset();
   }
 }

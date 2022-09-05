@@ -3,6 +3,7 @@
 #include "vsprintf.h"
 #include <stdarg.h>
 
+//__attribute__ ((section(".init.uart")))
 void config_uart(){
 	write8((u32 *)0xbfbf0003,1);
 	write8((u32 *)0xbfbf0007,0);
@@ -46,7 +47,6 @@ int uart_printf(const char *fmt, ...)
     return i;
 }
 
-
 char uart_getb(){
 	while(!((read8((u32 *)0xbfbf0017)) & 0x1));
 	return read8((u32 *)0xbfbf0003);
@@ -57,5 +57,6 @@ void uart_read(u8 *buf,int size){
 	while(size--){
 		*p++ = uart_getb();
 	}	
+	//*p = '\x00';
 }
 

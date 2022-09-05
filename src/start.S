@@ -3,7 +3,8 @@
 
 .extern __stack_addr
 .extern __global_pointer
-.extern _inite_sym
+.extern _eirq
+.extern _stext
 .extern _edata
 
 .global __start
@@ -77,7 +78,7 @@ ini:
 	jal        config_cache
 	nop
 	lui        k0,0xbfc0
-	addiu      k0,k0,_inite_sym
+	addiu      k0,k0,_eirq
 	lui        k1,0xbfc0
 	addiu      k1,k1,_edata
 	lui        t1,0x8000

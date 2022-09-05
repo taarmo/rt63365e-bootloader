@@ -6,7 +6,7 @@
 
 .global config_dmc
 
-.section .init_main
+.section .init.dmc
 
 config_dmc:
 	lui        v1,0xbfb0

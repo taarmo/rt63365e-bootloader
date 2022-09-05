@@ -3,7 +3,7 @@
 
 .globl config_cache
 
-.section .init_main
+.section .init.cache
 
 config_cache:
 	move       t4,ra
