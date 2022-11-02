@@ -25,4 +25,20 @@ while i < 0x100:
     #print(hex(p.read32(0xbfbc0000)))
     i+=4
 
+#0xbfbc0000
+#p.write32(0xbfbc0000, (0x0a000102)) 
+#1er tamaño de rafaga en bytes de envio
+#2o tamaño de rafaga en bytes de recepcion 
+#3er nibble enable
+#7o  nibble datos
+#8o  nibble datos
+
+#0xbfbc0004
+#p.write32(0xbfbc0004,0xfff6ff00) 
+#AÑADE DATOS
+#1er 2o nibble opcode
+#7o 8o nibble datos
+#5o 6o nibble datos
+
+
 

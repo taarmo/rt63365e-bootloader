@@ -18,10 +18,8 @@ u32 value2;
  uart_puts(buf);
  config_exceptions();
  //__asm__ volatile ("j 0x80f00000"); //PROVOCAR EXCEPCION
- value1 = build_frame(0x3,0x0);
- uart_printf("El valor es %x\n\r",value1);
   while (1){
- 	 value1 = build_frame(0x3,0x00); //50
+ 	 value1 = build_frame(0x3,0x44); //50
 	 //a0  --> 1a
 	 //a8  --> 9a
 	 //b0  --> 8
