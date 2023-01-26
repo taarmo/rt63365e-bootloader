@@ -21,7 +21,7 @@ void _main() {
 	while (1){
 		//value1=read_frame(0xbfc00044);
 		//uart_printf("El valor es %x\n\r",value1);
-		proxy_uart_process();
+		uart_debug_process();
 		//reset();
 	}
 }

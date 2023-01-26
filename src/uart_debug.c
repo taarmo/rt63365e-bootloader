@@ -3,11 +3,18 @@
 #include "utils.h"
 #include "elf_loader.h"
 #include "uart_debug.h"
+#include "types.h"
+//#include "../lib/minlzlib/src/minlzma.h"
 
-extern u8 jump_zone[0x10000];
+//extern u8 jump_zone[0x10000];
+u32 size_decompress = 4346;
+u8 arr[878];
+u8 arr_decompress[4346];
 
-void proxy_uart_process(){
-	void *p;
+
+
+void uart_debug_process(){
+	//void *p;
 	u32 value1,value2;
 	struct request req;
 	//struct reply rep;
@@ -61,19 +68,24 @@ void proxy_uart_process(){
 			addr = req.args[0];
 			size = req.args[1];
 			uart_write((u8 *)&size,4);
-			uart_read(jump_zone,size);
-			p = _main_elf(jump_zone);
-			void (*func)(void) = (void(*)(void))p;
+			//uart_read(jump_zone,size);
+			uart_read(arr,size);
+			//XzDecode(arr,size,arr_decompress,&size_decompress);		
+			xxd(arr_decompress,size_decompress,8);	
+			//p = _main_elf(jump_zone);
+			//void (*func)(void) = (void(*)(void))p;
 
-			u32 a = 0x80040000;
-			u32 b = 0x80050000;
-			while(a != b){
-				cache(a,0x19);
-				sync();
-				cache(a,0x10);
-				a+= 0x20;
-			}
-			func();
+			//u32 a = 0x80040000;
+			//u32 b = 0x80050000;
+			//while(a != b){
+			//	cache(a,0x19);
+			//	sync();
+			//	cache(a,0x10);
+			//	a+= 0x20;
+			//}
+			//func();
+			//
+			//
 			//while(1){
 			//	uart_printf("direccion: %x \n\r",func);
 			//	for(int i=0;i<40;i++){

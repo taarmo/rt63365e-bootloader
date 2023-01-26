@@ -13,7 +13,7 @@ struct reply{
 	u32 val;
 };
 
-void proxy_uart_process();
+void uart_debug_process();
 
 enum type_opcode{
 	WRITE32_UART=0x100,

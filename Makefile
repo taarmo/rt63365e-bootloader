@@ -22,18 +22,23 @@ endef
 RES = main.out
 
 GCC_PATH = /usr/bin/
-LINKER_SCRIPT     = ./hg532s_bootloader.ld
+LINKER_SCRIPT     = ./rt63365e.ld 
 
 CCPP = $(GCC_PATH)mips-linux-gnu-g++
 CC = $(GCC_PATH)mips-linux-gnu-gcc
 OBJCOPY = mips-linux-gnu-objcopy
 
 MIPS_FLAGS = -march=mips32r2
-CFLAGS = -O3 -EB $(MIPS_FLAGS) -std=c99 -fno-builtin -Wall -pedantic -mno-abicalls -fno-pic -fno-stack-protector -fomit-frame-pointer
+
+#CFLAGS = -O2 -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -mno-abicalls -fno-PIC -fno-PIE -fno-stack-protector -fomit-frame-pointer -ffreestanding -ffunction-sections -fdata-sections -nostdinc -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) 
+
+CFLAGS = -O2 -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -mno-abicalls -fno-PIC -fno-PIE -fno-stack-protector -fomit-frame-pointer -ffreestanding -nostdinc -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) 
+
 #CPPFLAGS = -Wall -pedantic
-LD_FLAGS = -nostartfiles -nostdlib -static 
+LD_FLAGS = -nostdlib -static
 
 SRC      = src
+LIB      = lib
 OBJ      = obj
 MKDIR	 = mkdir -p
 
@@ -49,8 +54,13 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 #SOURCESC = src/main_ram.c src/config_uart.c src/print.c src/write_uart.c
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
-
 ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/spi.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o obj/elf_loader.o
+
+PROJECT_INC_PATHS =
+
+#LIBS = $(LIB)/minlzlib/minlzlib.a 
+LIBS = 
+
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
 SUBDIRS    = $(shell find $(SRC) -type d)
@@ -63,7 +73,8 @@ PROJECT_INC_PATHS = -I$(SRC)
 all: $(RES).bin
 
 $(RES): $(OBJSUBDIRS) $(ALLOBJS) 
-	$(CC) $(LD_FLAGS) -T$(LINKER_SCRIPT) $(ALLOBJS) -o $(RES) 
+	$(MAKE) -C lib 
+	$(CC) $(LD_FLAGS) -T$(LINKER_SCRIPT) $(ALLOBJS) $(LIBS) -o $(RES) 
 
 #$(foreach F,$(SOURCESCPP),$(eval $(call COMPILE,$(CCPP),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(CPPFLAGS) $(PROJECT_INC_PATHS))))
 $(foreach F,$(SOURCESS),$(eval $(call COMPILE,$(CC),$(call S2O,$(F)),$(F),$(call C2H,$(F)),$(CFLAGS))))
@@ -73,9 +84,11 @@ $(OBJSUBDIRS):
 	$(MKDIR) $(OBJSUBDIRS)
 
 clean:
+	$(MAKE) -C lib clean
 	rm $(ALLOBJS)
 
 cleanall:
+	$(MAKE) -C lib cleanall
 	rm main*
 	rm $(ALLOBJS)
 
@@ -94,10 +107,10 @@ rune:
 
 #DEBUG
 info:
-	$(info $(SOURCESS))
-	$(info $(SOURCESCPP))
-	$(info $(SUBDIRS))
-	$(info $(OBJSUBDIRS))
-	$(info $(ALLOBJS))
+	$(info $(SOURCESC))
+	#$(info $(SOURCESCPP))
+	#$(info $(SUBDIRS))
+	#$(info $(OBJSUBDIRS))
+	#$(info $(ALLOBJS))
 
 

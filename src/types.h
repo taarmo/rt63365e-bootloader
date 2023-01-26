@@ -2,6 +2,11 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
+#include <limits.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
 #define false 0
 #define true 1
 
@@ -14,18 +19,5 @@ typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;
 typedef signed long long s64;
-
-typedef s32 size_t;
-
-#define NULL ((void *)0)
-
-#define INT_MAX ((int)0x7fffffff)
-#define UINT_MAX ((unsigned int)0xffffffff)
-
-#define LONG_MAX INT_MAX
-#define ULONG_MAX UINT_MAX
-
-#define LLONG_MAX ((long long)0x7fffffffffffffff)
-#define ULLONG_MAX ((unsigned long long)0xffffffffffffffff)
 
 #endif

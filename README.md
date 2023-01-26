@@ -1,1 +1,1 @@
-# hg532s-bootloader
+# rt63365e-bootloader

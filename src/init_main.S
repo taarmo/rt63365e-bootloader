@@ -169,9 +169,5 @@ init_main:
 	nop
 	nop
 	nop
-	lui   gp,0x8000
-	addiu gp,gp,__global_pointer
-	lui   sp,0x8000
-	addiu sp,sp,__stack_addr
 	j _main
 	nop
