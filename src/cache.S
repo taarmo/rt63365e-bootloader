@@ -1,5 +1,5 @@
-#include "m32c0.h"
 #include "regdef.h"
+#include "m32c0.h"
 
 .globl config_cache
 

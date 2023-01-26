@@ -5,7 +5,7 @@ MEMORY
 	FLASH (rx) : ORIGIN = 0xbfc00000, LENGTH = 8M 
 }
 
-__stack_size = 0x2000;
+__stack_size = 0x12000;
 __data_size = 0x200;
 
 ENTRY(__start)

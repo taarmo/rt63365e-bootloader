@@ -13,12 +13,14 @@ void exception_handler(struct reg_struct *reg_context){
 	mfc0(cause,$13,0);
 	mfc0(epc,$14,0);
 	mfc0(badaddr,$8,0);
-	uart_printf("excepcion\n\r");
-	uart_printf("pc es 0x%x \n\r",reg_context->pc);
-	uart_printf("status es 0x%x \n\r",status);
-	uart_printf("cause es 0x%x \n\r",cause);
-	uart_printf("epc es 0x%x \n\r",epc);
-	uart_printf("badaddr es 0x%x \n\r",badaddr);
+	while(1){
+		uart_printf("excepcion\n\r");
+		uart_printf("pc es 0x%x \n\r",reg_context->pc);
+		uart_printf("status es 0x%x \n\r",status);
+		uart_printf("cause es 0x%x \n\r",cause);
+		uart_printf("epc es 0x%x \n\r",epc);
+		uart_printf("badaddr es 0x%x \n\r",badaddr);
+	}
 	reset();
 }
 

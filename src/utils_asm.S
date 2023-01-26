@@ -11,3 +11,4 @@ memcpy32:
 	addiu $a1,$a1,0x4
 	bne $a2,$zero,ja1
 	jr $ra
+

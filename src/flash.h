@@ -1,0 +1,15 @@
+#include "types.h"
+
+enum OP_FLASH{
+	NOP = 0x0,
+	WRR =	0x01,
+	PAGE_PGRM = 0x2,
+	READ = 0x3,
+	WR_DISABLE = 0x4,
+	RDSR = 0x5,
+	WR_ENABLE = 0x6,
+	ERASE = 0x7
+};
+
+void page_pgrm(u32 addr, u8 buf[256],u32 size);
+void erase(u32 addr);

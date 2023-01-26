@@ -29,7 +29,7 @@ CC = $(GCC_PATH)mips-linux-gnu-gcc
 OBJCOPY = mips-linux-gnu-objcopy
 
 MIPS_FLAGS = -march=mips32r2
-CFLAGS = -O3 -EB $(MIPS_FLAGS) -std=c99 -fno-builtin -Wall -pedantic -fno-exceptions -mno-abicalls -fno-pic -fno-unwind-tables -fno-stack-protector -mframe-header-opt -fomit-frame-pointer -fregmove -fcaller-saves -ffreestanding
+CFLAGS = -O3 -EB $(MIPS_FLAGS) -std=c99 -fno-builtin -Wall -pedantic -mno-abicalls -fno-pic -fno-stack-protector -fomit-frame-pointer
 #CPPFLAGS = -Wall -pedantic
 LD_FLAGS = -nostartfiles -nostdlib -static 
 
@@ -50,7 +50,7 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
 
-ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/proxy.o obj/spi.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o 
+ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/spi.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o obj/elf_loader.o
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
 SUBDIRS    = $(shell find $(SRC) -type d)

@@ -72,16 +72,19 @@ ini:
 	//	addiu		 gp,gp,__global_pointer
 	nop
 	nop
+
 	//config
 	jal        config_dmc
 	nop
 	jal        config_cache
 	nop
+
 	lui        k0,0xbfc0
 	addiu      k0,k0,_eirq
 	lui        k1,0xbfc0
 	addiu      k1,k1,_edata
 	lui        t1,0x8000
+
 memcpy:
 	lw         t0,0x0(k0)
 	nop
@@ -90,6 +93,7 @@ memcpy:
 	addiu      t1,t1,0x4
 	bne        k1,k0,memcpy
 	nop
+
 	lui        t1,0x8000
 	lui        t2,0x8002
 
