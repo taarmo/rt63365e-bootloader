@@ -60,16 +60,16 @@ void config_exceptions(){
 	mfc0(status,$12,0);		//status
 	mtc0(status& ~0x400000,$12,0x0);
 
-	memcpy32(0x80000180,&_sirq,248);
+	memcpy32((u32 *)0x80000180,&_sirq,248);
 
 	set_except_vector(0,(void *)0x80020200);
 
 	for(int i=1;i<32;i++){
 		set_except_vector(i,exception_handler);
 	}
-	memcpy32(0x80000000,irq_dispatcher,0x100);
-	memcpy32(0x80020000,exception_handlers,31*4);
-	memcpy32(0x80020200,&trampoline_irq,0x200);
+	memcpy32((u32 *)0x80000000,irq_dispatcher,0x100);
+	memcpy32((u32 *)0x80020000,exception_handlers,31*4);
+	memcpy32((u32 *)0x80020200,&trampoline_irq,0x200);
 
 	//config cache
 	//u32 a = (0x80000000+0x180) & 0xffffffe0; 		//-0x20

@@ -4,7 +4,8 @@
 .extern __stack_addr
 .extern __global_pointer
 .extern __rodata_end
-.extern _edata
+.extern _fin_data_flash
+.extern _gp
 
 .global __start
 
@@ -12,7 +13,7 @@
 
 __start:
 	//reset 0xbfc00000
-	j         	 ini 
+	j            ini 
 	nop
 	nop
 	nop
@@ -26,7 +27,7 @@ __start:
 	nop
 	nop
 ini:
-	mtc0     	 zero,C0_WATCHLO,0x0 
+	mtc0         zero,C0_WATCHLO,0x0 
 	mtc0         zero,C0_WATCHHI,0x0 //disable wathcpoint
 
 	mfc0         k0,C0_STATUS
@@ -65,47 +66,49 @@ ini:
 	add          v0,zero,zero
 
 	//stack
-	lui 		 sp,0x8000
-	addiu		 sp,sp,__stack_addr
+	//lui        sp,0x8000
+	//addiu	     sp,sp,__stack_addr
+	la           sp,__stack_addr
 	//global pointer
-	lui 		 gp,0x8000
-	addiu		 gp,gp,__global_pointer
+	la           gp,_gp
+	//lui        gp,0x8000
+	//addiu	     gp,gp,_gp
 
 	//config
-	jal        config_dmc
+	jal          config_dmc
 	nop
-	jal        config_cache
+	jal          config_cache
 	nop
 
-	lui        k0,0xbfc0
-	addiu      k0,k0,__rodata_end
-	lui        k1,0xbfc0
-	addiu      k1,k1,_edata
-	lui        t1,0x8000
+	lui          k0,0xbfc0
+	addiu        k0,k0,_init_text_flash
+	lui          k1,0xbfc0
+	addiu        k1,k1,_fin_data_flash
+	lui          t1,0x8000
 
 memcpy:
-	lw         t0,0x0(k0)
+	lw           t0,0x0(k0)
 	nop
-	sw         t0,0x0(t1)
-	addiu      k0,k0,0x4
-	addiu      t1,t1,0x4
-	bne        k1,k0,memcpy
+	sw           t0,0x0(t1)
+	addiu        k0,k0,0x4
+	addiu        t1,t1,0x4
+	bne          k1,k0,memcpy
 	nop
 
-	lui        t1,0x8000
-	lui        t2,0x8002
+	lui          t1,0x8000
+	lui          t2,0x8002
 
 sincr:
-	cache      0x19,0x0(t1)
-	sync       0x0
-	cache      0x10,0x0(t1)
-	addiu      t1,t1,0x20
-	bne        t2,t1,sincr
+	cache        0x19,0x0(t1)
+	sync         0x0
+	cache        0x10,0x0(t1)
+	addiu        t1,t1,0x20
+	bne          t2,t1,sincr
 	nop
 	//jmp ram
-	lui        k0,0x8000
-	or         k0,0x0020
-	jr         k0
+	lui          k0,0x8000
+	or           k0,0x0020
+	jr           k0
 	nop
 
 

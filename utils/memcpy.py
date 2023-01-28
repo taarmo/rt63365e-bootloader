@@ -5,11 +5,11 @@ usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
 
-f = open("../stub/main.out","rb")
+f = open("../stub/text_comp.lzma","rb")
 a = []
 a = f.read()
 
-b = 0x8001f000
+b = 0x80013b70
 b=p.writemem(b,a)
 print(hex(b))
 

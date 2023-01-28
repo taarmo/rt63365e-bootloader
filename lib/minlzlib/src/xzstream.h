@@ -24,9 +24,6 @@ Environment:
 --*/
 
 #pragma once
-#ifdef _MSC_VER
-#pragma warning(disable:4214)
-#endif
 
 //
 // This is the filter ID for LZMA2 as part of an XZ block header's "LzmaFlags"

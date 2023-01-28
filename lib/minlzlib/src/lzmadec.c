@@ -606,7 +606,7 @@ LzResetState (
     Decoder.Sequence = LzmaLitLitLitState;
     Decoder.Rep0 = Decoder.Rep1 = Decoder.Rep2 = Decoder.Rep3 = 0;
     //static_assert((LZMA_BIT_MODEL_SLOTS * 2) == sizeof(Decoder.u.BitModel),
-    //              "Invalid size");
+    //             "Invalid size");
     for (int i = 0; i < LZMA_BIT_MODEL_SLOTS; i++)
     {
         RcSetDefaultProbability(&Decoder.u.RawProbabilities[i]);

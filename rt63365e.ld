@@ -5,8 +5,7 @@ MEMORY
 	FLASH (rx) : ORIGIN = 0xbfc00000, LENGTH = 8M 
 }
 
-__stack_size = 0x12000;
-__data_size = 0x200;
+__stack_size = 0x1200;
 
 ENTRY(__start)
 
@@ -39,28 +38,26 @@ SECTIONS
 		*(.text.main)
 		*(.text)
 		_etext = .;
-	} >RAM AT>FLASH
+	} > RAM AT>FLASH
 
 	.data : { 
-		__global_pointer = .;
-		*(.data) 
+		_sdata = .;
 		*(.data.*) 
-		. = . + __data_size;
+		_gp = ALIGN(16);
+		*(.data) 
 		_edata = .;
-	} >FLASH		/* initialized data */
+	} > RAM	AT>FLASH	/* initialized data */
 
-	.bss : { 
+	.bss : ALIGN(16) { 
 		__bss_start = .;
 		*(.bss) 
 		*(.bss.*) 
 		__bss_end = .;
 	} > RAM			/* cleared-to-zero data */
 
-	.stack : {
-		. = ALIGN(16);
+	.stack : ALIGN(16){
 		__stack_end = .;
 		. = . + __stack_size;
-		. = ALIGN(16);
 		*(.stack)
 		__stack_addr = .;
 	} > RAM
@@ -90,9 +87,16 @@ SECTIONS
 }
 
 _init_size = _inite_sym - _inits_sym;
+_irq_size = _eirq - _sirq;
+_rodata_size = __rodata_end - __rodata_start;
 _text_size = _etext - _stext;
+_data_size = _edata - _sdata;
 
-_init_text_flash = _inits_sym + _init_size;
+_init_text_flash = _init_size + _irq_size + _rodata_size + 4;
 _fin_text_flash = _init_text_flash + _text_size + 16;
+
+_init_data_flash = _init_size + _irq_size + _rodata_size + _text_size + 4;
+_fin_data_flash = _init_data_flash + _data_size;
+
 
 

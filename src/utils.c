@@ -28,11 +28,11 @@ void xxd(u8 *arr,u32 size,u32 col){
 	for(u8 i = 1; i < size; i++){
 		uart_printf( "%02hhx ", *(arr+i-1) );
 		if(!(i % col)){
-			uart_puts("\n\r");
+			uart_puts((u8 *)"\n\r");
 			uart_printf( "%x| ", (u32 *)(arr+i));
 		}
 	}
-	uart_puts("\n\r");
+	uart_puts((u8 *)"\n\r");
 }	
 
 u32 crc32_compute(u8 const * p_data, u32 size, u32 const * p_crc)

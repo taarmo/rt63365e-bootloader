@@ -33,7 +33,7 @@ MIPS_FLAGS = -march=mips32r2
 
 #CFLAGS = -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -nostdlib -mno-abicalls -fno-common -fno-PIE -fno-stack-protector -fomit-frame-pointer -ffunction-sections -fdata-sections -nostdinc -ffreestanding -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) 
 
-CFLAGS = -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -nostdlib -mno-abicalls -fno-common -fno-PIE -fno-stack-protector -fomit-frame-pointer -nostdinc -ffreestanding -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) 
+CFLAGS = -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -nostdlib -mno-abicalls -fno-common -fno-PIE -fno-stack-protector -fomit-frame-pointer -nostdinc -ffreestanding -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) -Wno-multichar 
 #CPPFLAGS = -Wall -pedantic
 
 SRC      = src
