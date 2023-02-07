@@ -26,6 +26,7 @@ Environment:
 
 #include "minlzlib.h"
 #include "lzma2dec.h"
+#include "../../../src/uart.h"
 
 bool
 Lz2DecodeChunk (

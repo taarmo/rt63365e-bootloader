@@ -54,7 +54,7 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 #SOURCESC = src/main_ram.c src/config_uart.c src/print.c src/write_uart.c
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
-ALLOBJS    = obj/dictbuf.o obj/inputbuf.o obj/lzma2dec.o obj/lzmadec.o obj/rangedec.o obj/xzcrc.o obj/xzstream.o 
+ALLOBJS    = obj/dictbuf.o obj/inputbuf.o obj/lzma2dec.o obj/lzmadec.o obj/rangedec.o obj/xzstream.o  
 
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))

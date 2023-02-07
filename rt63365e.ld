@@ -55,7 +55,7 @@ SECTIONS
 		__bss_end = .;
 	} > RAM			/* cleared-to-zero data */
 
-	.stack : ALIGN(16){
+	.stack : {
 		__stack_end = .;
 		. = . + __stack_size;
 		*(.stack)

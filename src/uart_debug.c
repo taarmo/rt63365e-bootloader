@@ -4,15 +4,17 @@
 #include "elf_loader.h"
 #include "uart_debug.h"
 #include "types.h"
-#include "../lib/minlzlib/src/minlzma.h"
+#include "minlzma.h"
 
 //extern u8 jump_zone[0x10000];
+u8 input[972] __attribute__ ((aligned (32)));
+u8 output[4287] __attribute__ ((aligned (32)));
 
 void uart_debug_process(){
-	u32 size_decompress = 52;
-	u32 size_compress = 71;
-	u8 arr[71];
-	u8 arr_decompress[52];
+	u32 size_input = 972;
+	u32 size_output = 4287;
+	//u8 input[972];
+	//u8 output[4287];
 
 	//void *p;
 	u32 value1,value2;
@@ -69,20 +71,12 @@ void uart_debug_process(){
 			size = req.args[1];
 			uart_write((u8 *)&size,4);
 			//uart_read(jump_zone,size);
-			uart_read(arr,size);
-			XzDecode(arr,size,arr_decompress,&size_decompress);
-			while(1){
-				uart_puts((u8 *) "Recibido\n\r");
-				xxd(arr,0x40,0x8);
-				uart_puts((u8 *) "Decompress\n\r");
-				xxd(arr_decompress,0x40,0x8);
-				//for(u8 i = 0; i < 36; i++){
-				//	for(u8 j = 0; j<47;j++){
-				//		uart_puts(arr_decompress+j+i);
-				//	}
-				//	uart_puts((u8 *)"\n\r");
-				//}
+			uart_read(input,size);
+			for(int i=0;i<4287;i++){
+				output[i] = 0;
 			}
+			XzDecode(input,size_input,output,&size_output);
+			xxd(output,40,0x8);
 			//p = _main_elf(jump_zone);
 			//void (*func)(void) = (void(*)(void))p;
 

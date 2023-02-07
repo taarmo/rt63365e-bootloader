@@ -23,7 +23,6 @@ Environment:
 --*/
 
 #pragma once
-#include <stdint.h>
 
 //
 // The most complex LZMA sequence possible is a "match" sequence where the
@@ -71,20 +70,20 @@ typedef union _LZMA2_CONTROL_BYTE
     {
         struct
         {
-            uint8_t ResetState : 2;
-            uint8_t Reserved : 5;
             uint8_t IsLzma : 1;
+            uint8_t Reserved : 5;
+            uint8_t ResetState : 2;
         } Raw;
         struct
         {
-            uint8_t RawSize : 5;
-            uint8_t ResetState : 2;
             uint8_t IsLzma : 1;
+            uint8_t ResetState : 2;
+            uint8_t RawSize : 5;
         } Lzma;
         struct
         {
-            uint8_t : 7;
             uint8_t IsLzma : 1;
+            uint8_t : 7;
         } Common;
     } u;
     uint8_t Value;

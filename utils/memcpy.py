@@ -5,7 +5,7 @@ usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
 
-f = open("../stub/text_comp.lzma","rb")
+f = open("text_comp.xz","rb")
 a = []
 a = f.read()
 

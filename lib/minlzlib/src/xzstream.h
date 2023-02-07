@@ -24,6 +24,9 @@ Environment:
 --*/
 
 #pragma once
+#ifdef _MSC_VER
+#pragma warning(disable:4214)
+#endif
 
 //
 // This is the filter ID for LZMA2 as part of an XZ block header's "LzmaFlags"
@@ -79,9 +82,9 @@ typedef struct _XZ_STREAM_HEADER
     {
         struct
         {
-            uint8_t ReservedFlags;
             uint8_t CheckType : 4;
             uint8_t ReservedType : 4;
+            uint8_t ReservedFlags;
         } s;
         uint16_t Flags;
     } u;
@@ -100,9 +103,9 @@ typedef struct _XZ_STREAM_FOOTER
     {
         struct
         {
-            uint8_t ReservedFlags;
             uint8_t CheckType : 4;
             uint8_t ReservedType : 4;
+            uint8_t ReservedFlags;
         } s;
         uint16_t Flags;
     } u;
@@ -122,10 +125,10 @@ typedef struct _XZ_BLOCK_HEADER
     {
         struct
         {
-            uint8_t FilterCount : 2;
-            uint8_t Reserved : 4;
-            uint8_t HasCompressedSize : 1;
             uint8_t HasUncompressedSize : 1;
+            uint8_t HasCompressedSize : 1;
+            uint8_t Reserved : 4;
+            uint8_t FilterCount : 2;
         } s;
         uint8_t Flags;
     } u;
@@ -137,8 +140,8 @@ typedef struct _XZ_BLOCK_HEADER
         {
             struct
             {
-                uint8_t DictionarySize : 6;
                 uint8_t Reserved : 2;
+                uint8_t DictionarySize : 6;
             } s;
             uint8_t Properties;
         } u;

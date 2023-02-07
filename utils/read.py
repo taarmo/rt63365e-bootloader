@@ -8,9 +8,9 @@ p = ProxyUart(uartinterface,False)
 
 #print(hex(p.read32(0xbfc01000)))
 i = 0
-limit = 180
+limit = 300
 while(i < limit):
-    print(hex(p.read32(0xbfc00000+i)))
+    print(hex(p.read32(0x80017300+i)))
     i+=4
 
 #i=0

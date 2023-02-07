@@ -31,6 +31,10 @@ Environment:
 #include "minlzlib.h"
 #include "xzstream.h"
 
+#ifdef _WIN32
+void __security_check_cookie(_In_ uintptr_t _StackCookie) { (void)(_StackCookie); }
+#endif
+
 #ifdef MINLZ_META_CHECKS
 //
 // XZ Stream Container State

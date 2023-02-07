@@ -65,7 +65,7 @@ LIBS = $(LIB)/minlzlib/minlzlib.a
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
 SUBDIRS    = $(shell find $(SRC) -type d)
 OBJSUBDIRS = $(patsubst $(SRC)%,$(OBJ)%,$(SUBDIRS))
-PROJECT_INC_PATHS = -I$(SRC) 
+PROJECT_INC_PATHS = -I$(SRC) -I$(LIB)/minlzlib 
 
 
 .PHONY: info
