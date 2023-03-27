@@ -124,8 +124,10 @@
 #define REG_SP 		29
 #define reg_epc		$37
 #define REG_EPC		37
-#define reg_fp		$72
-#define REG_FP 		72
+#define reg_fpp		$72
+#define REG_FPP		72
+
+#define FP		72
 
 /* Exception Codes */
 #define	EXC_INT		0		/* External interrupt */

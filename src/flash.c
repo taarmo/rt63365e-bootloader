@@ -13,11 +13,11 @@ struct t_comm stm_opcodes[] = {
 	{ERASE,2,0}
 };
 
-void page_pgrm(u32 addr, u8 buf[256],u32 size){
-	spi_write(0x2,addr,buf,size);
+void page_pgrm(u32 addr, u8 buf[256], u32 size) {
+	spi_write(stm_opcodes[PAGE_PGRM].op,addr,buf,size);
 }
 
-void erase(u32 addr){
+void erase(u32 addr) {
 	send_cmd(stm_opcodes[ERASE],addr,0x0);
 }
 

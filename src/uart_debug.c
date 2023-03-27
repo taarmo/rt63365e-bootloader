@@ -91,21 +91,6 @@ void uart_debug_process(){
 			//func();
 			//
 			//
-			//while(1){
-			//	uart_printf("direccion: %x \n\r",func);
-			//	for(int i=0;i<40;i++){
-			//		uart_printf("%02hhx ",*(u8 *)(func+i));
-			//	}
-			//	uart_puts((u8 *)"\n\r");
-			//	for(int i=0;i<40;i++){
-			//		uart_printf("%02hhx ",*(u8 *)(p+i));
-			//	}
-			//	uart_puts((u8 *)"\n\r");
-			//}
-			//for(int i=0;i<20;i++){
-			//uart_printf("%x %x ",func,*func);
-			//	}
-			//}
 			break;
 	}
 	return;

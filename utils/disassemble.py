@@ -1,3 +1,7 @@
+from unicorn import *
+from capstone import *
+from keystone import *
+
 import serial
 import struct
 import time
@@ -6,6 +10,12 @@ from uart_interface import *
 usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
+
+
+def assembly(MIPS_CODE):
+    md = Cs(CS_ARCH_MIPS,CS_MODE_MIPS32+CS_MODE_BIG_ENDIAN)
+    for instruction in md.disasm(MIPS_CODE,0x1000):
+        print("0x%x:\t%s\t%s" % (instruction.address, instruction.mnemonic, instruction.op_str))
 
 #print(hex(p.read32(0xbfc01000)))
 i = 0x80000000 
@@ -19,8 +29,8 @@ while(i < limit):
     print(str(hex(i)) + ": " + str(hex(c)))
     i +=4
 
-#print(l)
-
+print("-------------------------------")
+assembly(l)
 #i=0
 #init_28 = 822476853
 #
@@ -34,5 +44,6 @@ while(i < limit):
 #    #p.write32(0xbfbc0014,0xff01ffff) 
 #    #print(hex(p.read32(0xbfbc0000)))
 #    i+=4
+
 
 

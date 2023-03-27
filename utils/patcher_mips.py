@@ -1,7 +1,4 @@
-from unicorn import Uc, UC_ARCH_ARM, UC_MODE_ARM, UcError
-# for accessing the R0 and R1 registers
-from unicorn.arm_const import UC_ARM_REG_R0, UC_ARM_REG_R1
-# We need to assemble ARM code
+from unicorn import *
 from keystone import *
 
 import argparse

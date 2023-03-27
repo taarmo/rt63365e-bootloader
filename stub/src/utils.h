@@ -8,7 +8,6 @@
 
 void memcpy32(void *dst, void *src, size_t size);
 u32 memcmp(const void *str1, const void *str2, size_t count);
-void * memcpy(void *dest, const void *src, size_t len);
 
 void xxd(u8 *arr,int size,int col);
 u32 crc32_compute(u8 const * p_data, u32 size, u32 const * p_crc);

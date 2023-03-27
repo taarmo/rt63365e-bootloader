@@ -21,7 +21,7 @@ void *loadelf(const u8 *elf) {
 	{
 		if(phdr->p_type == PT_LOAD) {
 			const void *src = elf + phdr->p_offset;
-			memcpy(phdr->p_paddr, src, phdr->p_filesz);
+			memcpy32(phdr->p_paddr, (void *)src, phdr->p_filesz);
 		}
 		phdr++;
 	}

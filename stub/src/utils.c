@@ -14,15 +14,6 @@ u32 memcmp(const void *str1, const void *str2, size_t count)
   return 0;
 }
 
-void * memcpy(void *dest, const void *src, size_t len)
-{
-  char *d = dest;
-  const char *s = src;
-  while (len--)
-    *d++ = *s++;
-  return dest;
-}
-
 void xxd(u8 *arr,u32 size,u32 col){
 	uart_printf( "%x| ", (u32 *)arr);
 	for(u8 i = 1; i < size; i++){

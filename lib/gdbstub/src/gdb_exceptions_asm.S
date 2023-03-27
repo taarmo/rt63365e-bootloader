@@ -1,14 +1,6 @@
 #include "regdef.h"
-#include "m32c0.h"
 
-.extern exception_handler
-.extern irq_handler
-
-.extern regs_ret
-.set noreorder
-.set noat
-
-.section .text.irq
+.extern gdb_handle_exception
 
 .macro save_context
 	subu	sp, sp, 0x100   
@@ -66,9 +58,15 @@
 
 	mfc0	k0,$0 
 	sw	k0, FR_CP0_INDEX(sp)
+
+	move	a0,sp
 .endm
 
 .macro unsave_context
+
+	la	k0, regs_ret
+	li	k1, 0x0 
+	//bne k0,k1, 1f
 
 	lw	k0, FR_CP0_INDEX(sp) 
 	mtc0	k0, $0
@@ -134,49 +132,9 @@
 
 .endm	
 
-.global exception_dispatcher
-exception_dispatcher:
+.global gdb_exception_dispatcher
+gdb_exception_dispatcher:
 	save_context	
-	jal exception_handler
+	jal gdb_handle_exception
 	unsave_context
 
-.global irq_dispatcher
-irq_dispatcher:
-	save_context	
-	jal irq_handler
-	unsave_context
-
-
-.global trampoline_exception
-trampoline_exception:
-	mfc0	k1, C0_CAUSE
-	lui 	k0, 0x8000
-	andi	k1, k1, 0x7c
-	addu	k0, k0, k1
-	lw	k0, 0x0(k0)
-	jr	k0
-	nop
-	jr	ra
-	nop
-
-
-.global trampoline_irq
-trampoline_irq:
-	mfc0	k1, C0_CAUSE
-	andi	k1, k1, 0xff00
-	srl	k1, k1, 10
-	subu	k1, k1, 1
-	lui	k0, 0x8002
-	jr	k0
-	nop
-	jr	ra
-	nop
-
-//trampoline_irq:
-//        mfc0       k0,C0_STATUS
-//        sll        k0,k0,0x3
-//        bltz       k0,ba
-//        move      k1,sp
-//        lui        k1,0x81fc
-//        lw         k1,offset(k1)   
-//		ba:

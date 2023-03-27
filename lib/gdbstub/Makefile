@@ -19,7 +19,7 @@ endef
 
 #########################MACROS#############################################
 
-RES = minlzlib.a
+RES = gdbstub.a
 
 GCC_PATH = /usr/bin/
 LINKER_SCRIPT     = 
@@ -54,7 +54,7 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 #SOURCESC = src/main_ram.c src/config_uart.c src/print.c src/write_uart.c
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
-ALLOBJS    = obj/dictbuf.o obj/inputbuf.o obj/lzma2dec.o obj/lzmadec.o obj/rangedec.o obj/xzstream.o  
+ALLOBJS    = obj/gdb_stub.o obj/utils_asm.o obj/utils.o obj/parse_gdb.o obj/gdb_exceptions.o obj/gdb_exceptions_asm.o 
 
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
@@ -81,7 +81,7 @@ clean:
 	rm $(ALLOBJS)
 
 cleanall:
-	rm minlzlib.a
+	rm gdbstub.a
 	rm $(ALLOBJS)
 
 
