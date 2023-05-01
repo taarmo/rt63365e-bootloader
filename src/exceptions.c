@@ -1,7 +1,6 @@
 #include "utils.h"
-#include "m32c0.h"
+#include "regdef.h"
 #include "uart.h"
-#include "frame_registers.h"
 
 extern u32 _irq_size;
 extern void* trampoline_irq;
@@ -22,21 +21,20 @@ void exception_handler(struct reg_struct *reg_context) {
 	uart_printf("epc es 0x%x \n\r",epc);
 	uart_printf("badaddr es 0x%x \n\r",badaddr);
 	while(1);
-	//reset();
 }
 
 void irq_handler(struct reg_struct *reg_context) {
-	u32 status,cause,epc,badaddr;
-	mfc0(status,$12,0);
-	mfc0(cause,$13,0);
-	mfc0(epc,$14,0);
-	mfc0(badaddr,$8,0);
+	u32 status, cause, epc, badaddr;
+	mfc0(status, $12, 0);
+	mfc0(cause, $13, 0);
+	mfc0(epc, $14, 0);
+	mfc0(badaddr, $8, 0);
 	uart_printf("interrupcion\n\r");
-	uart_printf("pc es 0x%x \n\r",reg_context->reg31);
-	uart_printf("status es 0x%x \n\r",status);
-	uart_printf("cause es 0x%x \n\r",cause);
-	uart_printf("epc es 0x%x \n\r",epc);
-	uart_printf("badaddr es 0x%x \n\r",badaddr);
+	uart_printf("pc es 0x%x \n\r", reg_context->reg31);
+	uart_printf("status es 0x%x \n\r", status);
+	uart_printf("cause es 0x%x \n\r", cause);
+	uart_printf("epc es 0x%x \n\r", epc);
+	uart_printf("badaddr es 0x%x \n\r", badaddr);
 	return;
 }
 
@@ -50,8 +48,8 @@ void set_except_vector(int n, void *addr) {
 void config_exceptions() {
 	u32 cause;
 	u32 status;
-	mtc0(0x80000000,$15,1); //ebase
-	mfc0(cause,$13,0);		//cause
+	mtc0(0x80000000,$15,1);		//ebase
+	mfc0(cause, $13, 0);		//cause
 	mtc0(cause & (~(1<<18)),$13,0); //cause
 	mtc0(cause & 0xfffffc1f,$12,1); //intctl
 

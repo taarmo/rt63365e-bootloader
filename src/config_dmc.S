@@ -1,5 +1,4 @@
 #include "regdef.h"
-#include "m32c0.h"
 
 .global config_dmc
 

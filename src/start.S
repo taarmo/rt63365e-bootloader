@@ -1,5 +1,4 @@
 #include "regdef.h"
-#include "m32c0.h"
 
 .extern __stack_addr
 .extern __global_pointer
@@ -147,7 +146,7 @@ sincr:
 	or	t4, t4, t5
 	sw	t4, 0x0(t3)
 
-	li	t5, 'C'
+	li	t5, 'T'
 	jal	disp_character
 	nop
 

@@ -21,7 +21,7 @@ void putDebugChar(unsigned char ch){
 }
 
 
-char* gdb_strcpy(char* destination, const char* source)
+char* gdb_strcpy(char* destination, char* source)
 {
     if (destination == '\x00') {
         return 0x0;
@@ -61,4 +61,5 @@ void *gdb_memset(void *s, int c,  unsigned int len) {
     }
     return s;
 }
+
 

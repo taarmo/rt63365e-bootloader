@@ -1,134 +1,134 @@
 #include "regdef.h"
 
 .extern gdb_handle_exception
+.extern gdb_regs
 
 .macro save_context
-	subu	sp, sp, 0x100   
+	
+	.set	noreorder
+	.set	noat
 
-	sw	s8, FR_SIZE(sp)
-	sw	zero, FR_FIR(sp) 
-	sw	zero, FR_FSR(sp) 
-	sw	ra, FR_REG31(sp)
-	sw	s8, FR_REG30(sp)
-	sw	sp, FR_REG29(sp)
-	sw	gp, FR_REG28(sp)     
-	sw	k1, FR_REG27(sp)
-	sw	k0, FR_REG26(sp)
-	sw	t9, FR_REG25(sp)
-	sw	t8, FR_REG24(sp)
-	sw	s7, FR_REG23(sp)
-	sw	s6, FR_REG22(sp)
-	sw	s5, FR_REG21(sp)
-	sw	s4, FR_REG20(sp)
-	sw	s3, FR_REG19(sp)
-	sw	s2, FR_REG18(sp)
-	sw	s1, FR_REG17(sp)
-	sw	s0, FR_REG16(sp)
-	sw	t7, FR_REG15(sp)
-	sw	t6, FR_REG14(sp)
-	sw	t5, FR_REG13(sp)
-	sw	t4, FR_REG12(sp)
-	sw	t3, FR_REG11(sp)
-	sw	t2, FR_REG10(sp)
-	sw	t1, FR_REG9(sp)
-	sw	t0, FR_REG8(sp)
-	sw	a3, FR_REG7(sp)
-	sw	a2, FR_REG6(sp)
-	sw	a1, FR_REG5(sp)
-	sw	a0, FR_REG4(sp)
-	sw	v1, FR_REG3(sp)
-	sw	v0, FR_REG2(sp)
-	sw	at, FR_REG1(sp)
-	sw	zero, FR_REG0(sp)   
+	sub 	sp, FR_SIZE
 
-	mfc0	k0, $13	
-	sw	k0, FR_CAUSE(sp)  
-	mfc0	k0, $8	
-	sw	k0, FR_BADVADDR(sp)  
-	mfhi	k0        
-	sw	k0, FR_HI(sp)
-	mflo	k0        
-	sw	k0, FR_LO(sp)
-	mfc0	k0,$12 
-	sw	k0, FR_STATUS(sp)
+	la	k0, fgdb_regs
+	//sw	zero, FR_FIR(k0) 
+	//sw	zero, FR_FSR(k0) 
+	mfc0	k1, C0_INDEX 
+	sw	k1, FR_CP0_INDEX(k0)
+	mfc0	k1, C0_EPC 	
+	sw	k1, FR_EPC(k0)
+	mfc0	k1, C0_CAUSE	
+	sw	k1, FR_CAUSE(k0)  
+	mfc0	k1, C0_BADVADDR	
+	sw	k1, FR_BADVADDR(k0)  
+	mfhi	k1        
+	sw	k1, FR_HI(k0)
+	mflo	k1        
+	sw	k1, FR_LO(k0)
+	mfc0	k1, C0_STATUS 
+	sw	k1, FR_STATUS(k0)
 
-	mfc0	k0,$14 	
-	sw	k0, FR_EPC(sp)
-	sw	k0, 148(sp) //pc
+	sw	ra, FR_REG31(k0)
+	sw	s8, FR_REG30(k0)
+	sw	sp, FR_REG29(k0)
+	sw	gp, FR_REG28(k0)     
+	//sw	k1, FR_REG27(k0)
+	//sw	k0, FR_REG26(k0)
+	sw	t9, FR_REG25(k0)
+	sw	t8, FR_REG24(k0)
+	sw	s7, FR_REG23(k0)
+	sw	s6, FR_REG22(k0)
+	sw	s5, FR_REG21(k0)
+	sw	s4, FR_REG20(k0)
+	sw	s3, FR_REG19(k0)
+	sw	s2, FR_REG18(k0)
+	sw	s1, FR_REG17(k0)
+	sw	s0, FR_REG16(k0)
+	sw	t7, FR_REG15(k0)
+	sw	t6, FR_REG14(k0)
+	sw	t5, FR_REG13(k0)
+	sw	t4, FR_REG12(k0)
+	sw	t3, FR_REG11(k0)
+	sw	t2, FR_REG10(k0)
+	sw	t1, FR_REG9(k0)
+	sw	t0, FR_REG8(k0)
+	sw	a3, FR_REG7(k0)
+	sw	a2, FR_REG6(k0)
+	sw	a1, FR_REG5(k0)
+	sw	a0, FR_REG4(k0)
+	sw	v1, FR_REG3(k0)
+	sw	v0, FR_REG2(k0)
+	sw	at, FR_REG1(k0)
+	sw	zero, FR_REG0(k0)   
 
-	mfc0	k0,$0 
-	sw	k0, FR_CP0_INDEX(sp)
-
-	move	a0,sp
+	move	a0, k0 
 .endm
 
 .macro unsave_context
 
-	la	k0, regs_ret
-	li	k1, 0x0 
-	//bne k0,k1, 1f
+	la	k0, fgdb_regs 
 
-	lw	k0, FR_CP0_INDEX(sp) 
-	mtc0	k0, $0
-	lw	k0, FR_EPC(sp) 
-	mtc0	k0, $14
+	lw	zero, FR_REG0(k0)
+	lw	at, FR_REG1(k0)
+	lw	v0, FR_REG2(k0)
+	lw	v1, FR_REG3(k0)
+	lw	a0, FR_REG4(k0)
+	lw	a1, FR_REG5(k0)
+	lw	a2, FR_REG6(k0)
+	lw	a3, FR_REG7(k0)
+	lw	t0, FR_REG8(k0)
+	lw	t1, FR_REG9(k0)
+	lw	t2, FR_REG10(k0)
+	lw	t3, FR_REG11(k0)
+	lw	t4, FR_REG12(k0)
+	lw	t5, FR_REG13(k0)
+	lw	t6, FR_REG14(k0)
+	lw	t7, FR_REG15(k0)
+	lw	s0, FR_REG16(k0)
+	lw	s1, FR_REG17(k0)
+	lw	s2, FR_REG18(k0)
+	lw	s3, FR_REG19(k0)
+	lw	s4, FR_REG20(k0)
+	lw	s5, FR_REG21(k0)
+	lw	s6, FR_REG22(k0)
+	lw	s7, FR_REG23(k0)
+	lw	t8, FR_REG24(k0)
+	lw	t9, FR_REG25(k0)
+	//k0
+	//k1
+	lw	gp, FR_REG28(k0)
+	lw	sp, FR_REG29(k0)  
+	lw	s8, FR_REG30(k0)
+	lw	ra, FR_REG31(k0)
 
-	li	k0, 0xfabada //pc
-	sw	k0, 148(sp)
+	lw	k1, FR_STATUS(k0) 
+	mtc0	k1, C0_STATUS
+	sync.p
+	lw	k1, FR_LO(k0) 
+	mtlo	k1
+	sync.p
+	lw	k1, FR_HI(k0) 
+	mthi	k1
+	sync.p
+	lw	k1, FR_BADVADDR(k0) 
+	mtc0	k1, C0_BADVADDR
+	sync.p
+	lw	k1, FR_CAUSE(k0) 
+	mtc0	k1, C0_CAUSE
+	sync.p
+	lw	k1, FR_EPC(k0) 
+	add	k1, 0x4
+	mtc0	k1, C0_EPC
+	sync.p
 
-	lw	k0, FR_CAUSE(sp) 
-	mtc0	k0, $13
-	lw	k0, FR_BADVADDR(sp) 
-	mtc0	k0, $8
-	lw	k0, FR_HI(sp) 
-	mthi	k0
-	lw	k0, FR_LO(sp) 
-	mtlo	k0
-	lw	k0, FR_STATUS(sp) 
-	mtc0	k0, $12
+	//lw  fsr, FR_FSR(k0) //fsr
+	//lw  fir, FR_FIR(k0) //fir
 
-	lw	zero, FR_REG0(sp)
-	lw	at, FR_REG1(sp)
-	lw	v0, FR_REG2(sp)
-	lw	v1, FR_REG3(sp)
-	lw	a0, FR_REG4(sp)
-	lw	a1, FR_REG5(sp)
-	lw	a2, FR_REG6(sp)
-	lw	a3, FR_REG7(sp)
-	lw	t0, FR_REG8(sp)
-	lw	t1, FR_REG9(sp)
-	lw	t2, FR_REG10(sp)
-	lw	t3, FR_REG11(sp)
-	lw	t4, FR_REG12(sp)
-	lw	t5, FR_REG13(sp)
-	lw	t6, FR_REG14(sp)
-	lw	t7, FR_REG15(sp)
-	lw	s0, FR_REG16(sp)
-	lw	s1, FR_REG17(sp)
-	lw	s2, FR_REG18(sp)
-	lw	s3, FR_REG19(sp)
-	lw	s4, FR_REG20(sp)
-	lw	s5, FR_REG21(sp)
-	lw	s6, FR_REG22(sp)
-	lw	s7, FR_REG23(sp)
-	lw	t8, FR_REG24(sp)
-	lw	t9, FR_REG25(sp)
-	lw	k0, FR_REG26(sp)
-	lw	k1, FR_REG27(sp)
-	lw	gp, FR_REG28(sp)
-	lw	sp, FR_REG29(sp)
-	lw	s8, FR_REG30(sp)
-	lw	ra, FR_REG31(sp)
+	lw	k1, FR_CP0_INDEX(k0) 
+	mtc0	k1, C0_INDEX 
+	sync.p
 
-	//lw  fsr, FR_FSR(sp) //fsr
-	//lw  fir, FR_FIR(sp) //fir
-	mfc0	k0, $12
-	li	k1, 0x8
-	and	k0, k0, k1
-	mtc0	k0, $12
-
-	lw	s8, FR_SIZE(sp)
-	addu	sp, sp, 0x100 
+	add 	sp, FR_SIZE
 
 .endm	
 
@@ -137,4 +137,6 @@ gdb_exception_dispatcher:
 	save_context	
 	jal gdb_handle_exception
 	unsave_context
+	eret
+	nop
 

@@ -1,3 +1,4 @@
+
 #define	zero		$0
 #define ZERO		0
 #define	at		$1
@@ -127,73 +128,52 @@
 #define reg_fp		$72
 #define REG_FP 		72
 
-/* Exception Codes */
-#define	EXC_INT		0		/* External interrupt */
-#define	EXC_MOD		1		/* TLB modification exception */
-#define	EXC_TLBL	2		/* TLB miss (Load or Ifetch) */
-#define	EXC_TLBS	3		/* TLB miss (Store) */
-#define	EXC_ADEL	4		/* Address error (Load or Ifetch) */
-#define	EXC_ADES	5		/* Address error (Store) */
-#define	EXC_IBE		6		/* Bus error (Ifetch) */
-#define	EXC_DBE		7		/* Bus error (data load or store) */
-#define	EXC_SYS		8		/* System call */
-#define	EXC_BP		9		/* Break point */
-#define	EXC_RI		10		/* Reserved instruction */
-#define	EXC_CPU		11		/* Coprocessor unusable */
-#define	EXC_OVF		12		/* Arithmetic overflow */
-#define	EXC_TRAP	13		/* Trap exception */
-#define	EXC_FPE		15		/* Floating Point Exception */
 
-#define SIGHUP   1
-#define SIGINT   2
-#define SIGQUIT  3
-#define SIGILL   4
-#define SIGTRAP  5
-#define SIGIOT   6
-#define SIGFPE   8
-#define SIGKILL  9
-#define SIGBUS   10
-#define SIGSEGV  11
-#define SIGSYS   12
-#define SIGTERM  15
-
-/* FPU Control/Status register fields */
-#define	CSR_FS		0x01000000	/* Set to flush denormals to zero */
-#define	CSR_C		0x00800000	/* Condition bit (set by FP compare) */
-
-#define	CSR_CMASK	(0x3f<<12)
-#define	CSR_CE		0x00020000
-#define	CSR_CV		0x00010000
-#define	CSR_CZ		0x00008000
-#define	CSR_CO		0x00004000
-#define	CSR_CU		0x00002000
-#define	CSR_CI		0x00001000
-
-#define	CSR_EMASK	(0x1f<<7)
-#define	CSR_EV		0x00000800
-#define	CSR_EZ		0x00000400
-#define	CSR_EO		0x00000200
-#define	CSR_EU		0x00000100
-#define	CSR_EI		0x00000080
-
-#define	CSR_FMASK	(0x1f<<2)
-#define	CSR_FV		0x00000040
-#define	CSR_FZ		0x00000020
-#define	CSR_FO		0x00000010
-#define	CSR_FU		0x00000008
-#define	CSR_FI		0x00000004
-
-#define	CSR_RMODE_MASK	(0x3<<0)
-#define	CSR_RM		0x00000003
-#define	CSR_RP		0x00000002
-#define	CSR_RZ		0x00000001
-#define	CSR_RN		0x00000000
-#define	CAUSE_EXCMASK	0x0000003C	/* Cause code bits */
-#define	CAUSE_EXCSHIFT	2
-
-#define R_SZ 4
-
-
+#define C0_INDEX	$0
+#define C0_INX		$0
+#define C0_RANDOM	$1
+#define C0_RAND		$1
+#define C0_ENTRYLO0	$2
+#define C0_TLBLO0	$2
+#define C0_ENTRYLO1	$3
+#define C0_TLBLO1	$3
+#define C0_CONTEXT	$4
+#define C0_CTXT		$4
+#define C0_PAGEMASK	$5
+#define C0_WIRED	$6
+#define C0_BADVADDR 	$8
+#define C0_VADDR 	$8
+#define C0_COUNT 	$9
+#define C0_ENTRYHI	$10
+#define C0_TLBHI	$10
+#define C0_COMPARE	$11
+#define C0_STATUS	$12
+#define C0_SR		$12
+#define C0_INTCTL	$12,1
+#define C0_CAUSE	$13
+#define C0_CR		$13
+#define C0_EPC 		$14
+#define C0_PRID		$15
+#define C0_EBASE	$15,1
+#define C0_CONFIG	$16
+#define C0_CONFIG0	$16,0
+#define C0_CONFIG1	$16,1
+#define C0_CONFIG2	$16,2
+#define C0_CONFIG3	$16,3
+#define C0_LLADDR	$17
+#define C0_WATCHLO	$18
+#define C0_WATCHHI	$19
+#define C0_DEBUG	$23
+#define C0_DEPC		$24
+#define C0_PERFCNT	$25
+#define C0_ERRCTL	$26
+#define C0_CACHEERR	$27
+#define C0_TAGLO	$28
+#define C0_DATALO	$28,1
+#define C0_TAGHI	$29
+#define C0_DATAHI	$29,1
+#define C0_ERRPC	$30
+#define C0_DESAVE	$31
 
 
 #define NUMREGS			96
@@ -308,3 +288,58 @@
 #define FR_CP0_PRID		((FR_CP0_REG14) + GPR_SIZE)		/* 89 */
 
 #define FR_SIZE			((FR_CP0_PRID) + 12) 
+
+#ifndef __ASSEMBLER__
+
+struct reg_struct {
+
+	unsigned int pad0;
+	unsigned int pad1;
+	unsigned int pad2;
+	unsigned int pad3;
+	unsigned int pad4;
+	/*
+	 * saved main processor registers
+	 */
+	long	 reg0,  reg1,  reg2,  reg3,  reg4,  reg5,  reg6,  reg7;   //zero-a3
+	long	 reg8,  reg9,  reg10, reg11, reg12, reg13, reg14, reg15;  //t0-t7
+	long	 reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23;  //s0-s7
+	long	 reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31;  //t8-ra
+	long     reg32, reg33, reg34, reg35, reg36, reg37; 		  //cp0_status-pc
+								          //cp0_cause <- reg36
+	/*
+	 * Saved floating point registers
+	 */
+	long	reg38, reg39, reg40, reg41, reg42, reg43, reg44, reg45;  //f0-f7
+	long	reg46, reg47, reg48, reg49, reg50, reg51, reg52, reg53; //f8-f15
+	long	reg54, reg55, reg56, reg57, reg58, reg59, reg60, reg61; //f16-f23
+	long	reg62, reg63, reg64, reg65, reg66, reg67, reg68, reg69; //f24-f31
+
+
+	long 	cp1_fsr, cp1_fir;
+	long 	reg_fp;
+
+	/*
+	 * saved cp0 registers
+	 */
+	long 	cp0_index;
+	long 	cp0_epc;
+	long	cp0_random;
+	long	cp0_entrylo0;
+	long	cp0_entrylo1;
+	long	cp0_context;
+	long	cp0_pagemask;
+	long	cp0_wired;
+	long	cp0_reg7;
+	long	cp0_reg8;
+	long	cp0_reg9;
+	long	cp0_entryhi;
+	long	cp0_reg11;
+	long	cp0_reg12;
+	long	cp0_reg13;
+	long	cp0_reg14;
+	long	cp0_prid;
+};
+
+#endif
+

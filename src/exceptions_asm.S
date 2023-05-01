@@ -1,5 +1,4 @@
 #include "regdef.h"
-#include "m32c0.h"
 
 .extern exception_handler
 .extern irq_handler
@@ -49,45 +48,41 @@
 	sw	at, FR_REG1(sp)
 	sw	zero, FR_REG0(sp)   
 
-	mfc0	k0, $13	
+	mfc0	k0, C0_CAUSE	
 	sw	k0, FR_CAUSE(sp)  
-	mfc0	k0, $8	
+	mfc0	k0, C0_BADVADDR
 	sw	k0, FR_BADVADDR(sp)  
 	mfhi	k0        
 	sw	k0, FR_HI(sp)
 	mflo	k0        
 	sw	k0, FR_LO(sp)
-	mfc0	k0,$12 
+	mfc0	k0, C0_STATUS 
 	sw	k0, FR_STATUS(sp)
 
-	mfc0	k0,$14 	
+	mfc0	k0, C0_EPC	
 	sw	k0, FR_EPC(sp)
-	sw	k0, 148(sp) //pc
 
-	mfc0	k0,$0 
+	mfc0	k0, C0_INDEX
 	sw	k0, FR_CP0_INDEX(sp)
 .endm
 
 .macro unsave_context
 
 	lw	k0, FR_CP0_INDEX(sp) 
-	mtc0	k0, $0
+	mtc0	k0, C0_INDEX
 	lw	k0, FR_EPC(sp) 
-	mtc0	k0, $14
-
-	li	k0, 0xfabada //pc
-	sw	k0, 148(sp)
+	mtc0	k0, C0_EPC
 
 	lw	k0, FR_CAUSE(sp) 
-	mtc0	k0, $13
+	mtc0	k0, C0_CAUSE
 	lw	k0, FR_BADVADDR(sp) 
-	mtc0	k0, $8
+	mtc0	k0, C0_BADVADDR
 	lw	k0, FR_HI(sp) 
 	mthi	k0
 	lw	k0, FR_LO(sp) 
 	mtlo	k0
 	lw	k0, FR_STATUS(sp) 
-	mtc0	k0, $12
+	mtc0	k0, C0_STATUS
 
 	lw	zero, FR_REG0(sp)
 	lw	at, FR_REG1(sp)
@@ -124,11 +119,6 @@
 
 	//lw  fsr, FR_FSR(sp) //fsr
 	//lw  fir, FR_FIR(sp) //fir
-	mfc0	k0, $12
-	li	k1, 0x8
-	and	k0, k0, k1
-	mtc0	k0, $12
-
 	lw	s8, FR_SIZE(sp)
 	addu	sp, sp, 0x100 
 
@@ -139,13 +129,16 @@ exception_dispatcher:
 	save_context	
 	jal exception_handler
 	unsave_context
+	eret
+	nop
 
 .global irq_dispatcher
 irq_dispatcher:
 	save_context	
 	jal irq_handler
 	unsave_context
-
+	eret
+	nop
 
 .global trampoline_exception
 trampoline_exception:
@@ -159,7 +152,6 @@ trampoline_exception:
 	jr	ra
 	nop
 
-
 .global trampoline_irq
 trampoline_irq:
 	mfc0	k1, C0_CAUSE
@@ -172,11 +164,3 @@ trampoline_irq:
 	jr	ra
 	nop
 
-//trampoline_irq:
-//        mfc0       k0,C0_STATUS
-//        sll        k0,k0,0x3
-//        bltz       k0,ba
-//        move      k1,sp
-//        lui        k1,0x81fc
-//        lw         k1,offset(k1)   
-//		ba:

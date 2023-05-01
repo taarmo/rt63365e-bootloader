@@ -34,6 +34,7 @@ MIPS_FLAGS = -march=mips32r2
 
 CFLAGS = -O2 -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -mno-abicalls -fno-PIC -fno-PIE -fno-stack-protector -fno-omit-frame-pointer -ffreestanding -nostdinc -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) -Wno-multichar 
 
+
 #CPPFLAGS = -Wall -pedantic
 LD_FLAGS = -nostdlib -static
 

@@ -1,5 +1,4 @@
-#include "regs.h"
-
+#include "regdef.h"
 
 .globl gdb_read_byte
 .type gdb_read_byte, @function

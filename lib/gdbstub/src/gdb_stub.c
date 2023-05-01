@@ -1,8 +1,8 @@
 #include "../../../src/uart.h"
 #include "gdb_exceptions.h"
 #include "utils.h"
-#include "frame_registers.h"
-#include "regdef.h""
+#include "regdef.h"
+#include "m32c0.h"
 #include "parse_gdb.h"
 #include "mips_opcode.h"
 #include "inst.h"
@@ -36,7 +36,7 @@ static struct z0break z0break_arr[BREAKNUM];
 static struct z0break *z0break_avail = NULL;
 static struct z0break *z0break_list  = NULL;
 
-struct gdb_regs *regs_ret = NULL;
+struct gdb_regs fgdb_regs __attribute__((aligned(16)));
 
 /*
  * clear a software breakpoint
@@ -163,7 +163,7 @@ static int computeSignal (void) {
 
 	switch (exceptionCode)
 	{
-		case EXC_INT:
+		case EXC_INTR:
 		/* External interrupt */
 			return SIGINT;
 
@@ -230,7 +230,7 @@ void show_gdbregs(struct gdb_regs * regs) {
 	uart_printf("k0: %08lx k1: %08lx gp: %08lx sp: %08lx fp: %08lx ra: %08lx\n\r\n",
 	       regs->reg26, regs->reg27, regs->reg28, regs->reg29, regs->reg30, regs->reg31);
 	uart_printf("cp0_index: %08lx cp0_status: %08lx cp0_cause: %08lx cp0_epc: %08lx\n\r\n",
-	       regs->cp0_index, regs->reg32, regs->reg36, regs->cp0_epc);
+	       regs->cp0_index, regs->reg32, regs->reg36, regs->reg37);
 	/*
 	 * Saved cp0 registers
 	 */
@@ -270,8 +270,8 @@ static void gdb_stub_report_exception_info(struct gdb_regs *regs,unsigned char *
 	/*
 	 * Send frame pointer
 	 */
-	*ptr++ = hexchars[FP >> 4];
-	*ptr++ = hexchars[FP & 0xf];
+	*ptr++ = hexchars[REG_FP >> 4];
+	*ptr++ = hexchars[REG_FP & 0xf];
 	*ptr++ = ':';
 	ptr = mem2hex((char *)&regs->reg_fp, sizeof(long), ptr);
 	*ptr++ = ';';
@@ -279,8 +279,8 @@ static void gdb_stub_report_exception_info(struct gdb_regs *regs,unsigned char *
 	/*
 	 * Send stack pointer
 	 */
-	*ptr++ = hexchars[SP >> 4];
-	*ptr++ = hexchars[SP & 0xf];
+	*ptr++ = hexchars[REG_SP >> 4];
+	*ptr++ = hexchars[REG_SP & 0xf];
 	*ptr++ = ':';
 	ptr = mem2hex((char *)&regs->reg29, sizeof(long), ptr);
 	*ptr++ = ';';
@@ -289,16 +289,19 @@ static void gdb_stub_report_exception_info(struct gdb_regs *regs,unsigned char *
 }
 
 
-void gdb_handle_exception (struct gdb_regs *regs) {
-	unsigned char flag = 1;
+void gdb_handle_exception (struct gdb_regs *gdbstub_regs) {
+	//unsigned char flag = 1;
 	int host_has_detached = 0;
 	long addr,regno,length;
 	unsigned char *ptr;
 	long long regval;
 	int sigval;
 	int loop;
+	struct gdb_regs	*regs = &fgdb_regs;
 
-	//show_gdbregs(regs);
+	//while (1) {
+	//	show_gdbregs(regs);
+	//}
 	registers = (mips_register_t *)regs;
 	sigval = computeSignal();
 
@@ -306,10 +309,11 @@ void gdb_handle_exception (struct gdb_regs *regs) {
 	//	//gdbstub_printf( DEBUG_SINGLESTEP, "skipping breakinst\n" );
 	//	regs->cp0_epc += 4;
 	//}
-	if(flag) { 
-		*((unsigned int *)regs->reg37) = 0x0;
-		flag = 0;
-	}
+	//if(flag) { 
+	//	*((unsigned int *)regs->reg37) = 0x0;
+	//	flag = 0;
+	//}
+	
 
 	gdb_stub_report_exception_info(regs,ptr); 
 	putpacket (outBuffer);
@@ -334,10 +338,10 @@ void gdb_handle_exception (struct gdb_regs *regs) {
 
 			case 'v':
 				if ( gdb_strncmp((char*)&inBuffer[1], "Cont", 4)==0) {
-					if( inBuffer[5] == '?' ){
+					if ( inBuffer[5] == '?' ){
 						//gdb_strcpy(outBuffer, "vCont;c;C;s;S");
 						gdb_strcpy(outBuffer, "c;C;s;S");
-					}else if( inBuffer[6] == 'c' ){
+					}else if ( inBuffer[6] == 'c' ){
 						ptr = &inBuffer[1];
 						if (hexToInt(&ptr, &addr))
 							regs->cp0_epc = addr;
@@ -448,8 +452,7 @@ void gdb_handle_exception (struct gdb_regs *regs) {
 		putpacket(outBuffer);
 	}
 	ret:
-	regs_ret = regs;
-	return;
+		return;
 
 }
 
