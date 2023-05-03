@@ -25,7 +25,8 @@ void _main() {
 	//create_frame(WR_ENABLE,0x0,0x0);
 	//create_frame(PAGE_PGRM,0x0,0x12345678);
 	//write_frame(0x0,0x12345678);
-	while (1){
-		uart_debug_process();
+	while (1) {
+		//uart_debug_process();
+		uart_puts((u8 *) "AAABBBCCCC\n\r");
 	}
 }

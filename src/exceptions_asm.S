@@ -10,11 +10,10 @@
 .section .text.irq
 
 .macro save_context
-	subu	sp, sp, 0x100   
+	subu	sp, sp, FR_SIZE
 
-	sw	s8, FR_SIZE(sp)
-	sw	zero, FR_FIR(sp) 
-	sw	zero, FR_FSR(sp) 
+	//sw	zero, FR_FIR(sp) 
+	//sw	zero, FR_FSR(sp) 
 	sw	ra, FR_REG31(sp)
 	sw	s8, FR_REG30(sp)
 	sw	sp, FR_REG29(sp)
@@ -68,22 +67,6 @@
 
 .macro unsave_context
 
-	lw	k0, FR_CP0_INDEX(sp) 
-	mtc0	k0, C0_INDEX
-	lw	k0, FR_EPC(sp) 
-	mtc0	k0, C0_EPC
-
-	lw	k0, FR_CAUSE(sp) 
-	mtc0	k0, C0_CAUSE
-	lw	k0, FR_BADVADDR(sp) 
-	mtc0	k0, C0_BADVADDR
-	lw	k0, FR_HI(sp) 
-	mthi	k0
-	lw	k0, FR_LO(sp) 
-	mtlo	k0
-	lw	k0, FR_STATUS(sp) 
-	mtc0	k0, C0_STATUS
-
 	lw	zero, FR_REG0(sp)
 	lw	at, FR_REG1(sp)
 	lw	v0, FR_REG2(sp)
@@ -117,10 +100,32 @@
 	lw	s8, FR_REG30(sp)
 	lw	ra, FR_REG31(sp)
 
+	lw	k0, FR_STATUS(sp) 
+	mtc0	k0, C0_STATUS
+	sync.p
+	lw	k0, FR_LO(sp) 
+	mtlo	k0
+	sync.p
+	lw	k0, FR_HI(sp) 
+	mthi	k0
+	sync.p
+	lw	k0, FR_BADVADDR(sp) 
+	mtc0	k0, C0_BADVADDR
+	sync.p
+	lw	k0, FR_CAUSE(sp) 
+	mtc0	k0, C0_CAUSE
+	sync.p
+	lw	k0, FR_EPC(sp) 
+	add	k0, 0x4
+	mtc0	k0, C0_EPC
+	sync.p
+	lw	k0, FR_CP0_INDEX(sp) 
+	mtc0	k0, C0_INDEX
+	sync.p
+
 	//lw  fsr, FR_FSR(sp) //fsr
 	//lw  fir, FR_FIR(sp) //fir
-	lw	s8, FR_SIZE(sp)
-	addu	sp, sp, 0x100 
+	addu	sp, sp, FR_SIZE
 
 .endm	
 

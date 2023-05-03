@@ -149,12 +149,12 @@
 #define C0_COMPARE	$11
 #define C0_STATUS	$12
 #define C0_SR		$12
-#define C0_INTCTL	$12,1
+#define C0_INTCTL	$12//,1
 #define C0_CAUSE	$13
 #define C0_CR		$13
 #define C0_EPC 		$14
 #define C0_PRID		$15
-#define C0_EBASE	$15,1
+#define C0_EBASE	$15//,1 
 #define C0_CONFIG	$16
 #define C0_CONFIG0	$16,0
 #define C0_CONFIG1	$16,1

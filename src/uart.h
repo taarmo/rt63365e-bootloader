@@ -11,7 +11,7 @@ void uart_read(u8 *, int);
 
 void uart_putb(u8);
 void uart_puts(u8 *);
-void uart_write(void *,size_t count);
+void uart_write(void *, size_t );
 int uart_printf(const char *fmt, ...);
 
 #endif

@@ -5,6 +5,7 @@
 #include "types.h"
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#define STR(x) #x
 
 void show_regs();
 void memcpy32(void *dst, void *src, size_t size);
@@ -41,16 +42,16 @@ inline u32 read8(u32 *addr) {
 
 #define mfc0(source, reg, val)							\
 	if(val == 0){								\
-		__asm__ volatile("mfc0\t%0, " #reg : "=r"(source));		\
+		__asm__ volatile("mfc0\t%0, " STR(reg) : "=r"(source));		\
 	}else{									\
-		__asm__ volatile("mfc0\t%0, " #reg "," #val : "=r"(source));	\
+		__asm__ volatile("mfc0\t%0, " STR(reg) "," #val : "=r"(source));	\
 	}
 
 #define mtc0(source,reg,val)							\
 	if(val == 0){								\
-		__asm__ volatile("mtc0\t%0, " #reg :: "r"(source));		\
+		__asm__ volatile("mtc0\t%0, " STR(reg) :: "r"(source));		\
 	}else{									\
-		__asm__ volatile("mtc0\t%0, " #reg "," #val :: "r"(source)); 	\
+		__asm__ volatile("mtc0\t%0, " STR(reg) "," #val :: "r"(source)); 	\
 	}
 
 #define cache(base,op)       							\
