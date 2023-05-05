@@ -50,9 +50,6 @@
 
 #define _M32C0_H_
 
-/* 
- * MIPS32 Coprocessor 0 register numbers 
- */
 
 /* FPU Control/Status register fields */
 #define	CSR_FS		0x01000000	/* Set to flush denormals to zero */

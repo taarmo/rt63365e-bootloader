@@ -61,10 +61,10 @@ static inline u32 read_reg(u32 reg) {
 
 void show_regs() {
 	u32 inctl, status, epc, depc;
-	mfc0(status, $12, 0);
-	mfc0(epc, $14, 0);
-	mfc0(depc, $24, 0);
-	mfc0(inctl, $12, 1);
+	mfc0(status, C0_STATUS, 0);
+	mfc0(epc, C0_EPC, 0);
+	mfc0(depc, C0_DEPC, 0);
+	mfc0(inctl, C0_INTCTL, 1);
 	uart_printf("zero: %08lx at: %08lx\n\r",
 	       read_reg(0), read_reg(1));
 	uart_printf("v0: %08lx v1: %08lx a0: %08lx a1: %08lx a2: %08lx a3: %08lx t0: %08lx t1: %08lx\n\r",

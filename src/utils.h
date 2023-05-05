@@ -37,33 +37,51 @@ inline u32 read8(u32 *addr) {
 }
 
 	
-#define jump(addr)								\
+#define jump(addr)									\
 	__asm__ volatile("j\t " #addr);
 
-#define mfc0(source, reg, val)							\
-	if(val == 0){								\
-		__asm__ volatile("mfc0\t%0, " STR(reg) : "=r"(source));		\
-	}else{									\
+#define mfc0(source, reg, val)								\
+	if(val == 0){									\
+		__asm__ volatile("mfc0\t%0, " STR(reg) : "=r"(source));			\
+	}else{										\
 		__asm__ volatile("mfc0\t%0, " STR(reg) "," #val : "=r"(source));	\
 	}
 
-#define mtc0(source,reg,val)							\
-	if(val == 0){								\
-		__asm__ volatile("mtc0\t%0, " STR(reg) :: "r"(source));		\
-	}else{									\
+#define mtc0(source, reg, val)								\
+	if(val == 0){									\
+		__asm__ volatile("mtc0\t%0, " STR(reg) :: "r"(source));			\
+	}else{										\
 		__asm__ volatile("mtc0\t%0, " STR(reg) "," #val :: "r"(source)); 	\
 	}
 
-#define cache(base,op)       							\
-	__asm__ volatile("cache %1, (%0)":: "r"(base),"i"(op));
+#define cache(op,addr)						\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	noreorder				\n"	\
+	"	.set	mips3\n\t				\n"	\
+	"	cache	%0, %1					\n"	\
+	"	.set	pop					\n"	\
+	:								\
+	: "i" (op), "R" (*(unsigned char *)(addr)))
 
-#define sync() 									\
-	__asm__ volatile("sync 0x0":::);
 
-#define hazardbarrier() 							\
-	__asm__ volatile("ssnop\n"					   	\
-			 "ssnop\n"					   	\
-			 "ssnop\n"					   	\
+#define hazardbarrier() 								\
+	__asm__ volatile("ssnop\n"					   		\
+			 "ssnop\n"					   		\
+			 "ssnop\n"					   		\
 			 "ehb\n":::);  
+
+#define instruction_hazard()								\
+do {											\
+	unsigned long tmp;								\
+											\
+	__asm__ __volatile__(								\
+	"	.set	mips64r2				\n"			\
+	"	dla	%0, 1f					\n"			\
+	"	jr.hb	%0					\n"			\
+	"	.set	mips0					\n"			\
+	"1:							\n"			\
+	: "=r" (tmp));									\
+} while (0)
 
 #endif

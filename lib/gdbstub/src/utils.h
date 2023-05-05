@@ -33,15 +33,33 @@ void *gdb_memset(void *s, int c,  unsigned int len);
 		__asm__ volatile("mtc0\t%0, " #reg "," #val :: "r"(source)); 	\
 	}
 
-#define cache(base,op)       							\
-	__asm__ volatile("cache %1, (%0)":: "r"(base),"i"(op));
+#define cache(op,addr)						\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	noreorder				\n"	\
+	"	.set	mips3\n\t				\n"	\
+	"	cache	%0, %1					\n"	\
+	"	.set	pop					\n"	\
+	:								\
+	: "i" (op), "R" (*(unsigned char *)(addr)))
 
-#define sync() 									\
-	__asm__ volatile("sync 0x0":::);
 
-#define hazardbarrier() 							\
-	__asm__ volatile("ssnop\n"					   	\
-			 "ssnop\n"					   	\
-			 "ssnop\n"					   	\
+#define hazardbarrier() 								\
+	__asm__ volatile("ssnop\n"					   		\
+			 "ssnop\n"					   		\
+			 "ssnop\n"					   		\
 			 "ehb\n":::);  
+
+#define instruction_hazard()								\
+do {											\
+	unsigned long tmp;								\
+											\
+	__asm__ __volatile__(								\
+	"	.set	mips64r2				\n"			\
+	"	dla	%0, 1f					\n"			\
+	"	jr.hb	%0					\n"			\
+	"	.set	mips0					\n"			\
+	"1:							\n"			\
+	: "=r" (tmp));									\
+} while (0)
 

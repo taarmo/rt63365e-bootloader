@@ -1,6 +1,7 @@
 #include "../../../src/uart.h"
 #include "gdb_exceptions.h"
 #include "utils.h"
+#include "cache.h"
 #include "regdef.h"
 #include "m32c0.h"
 #include "parse_gdb.h"
@@ -87,14 +88,16 @@ void set_breakpoint(struct gdb_regs *regs, char* addr, int len) {
 		since we'll be returning to it when the user continues */
 		z0->instr = 0xffffffff;
 	}
-	else {
-		/* grab the instruction */
-		z0->instr = *(z0->address);
-		/* and insert the break */
-		*(z0->address) = BREAK_INSTR;
-	}
+	//else {
+	//	/* grab the instruction */
+	//	z0->instr = *(z0->address);
+	//	/* and insert the break */
+	//	*(z0->address) = BREAK_INSTR;
+	//}
+	z0->instr = *(z0->address);
+	*((unsigned int *)z0->address) = BREAK_INSTR;
 
-	/* Add to the list */
+	///* Add to the list */
 	struct z0break *znxt = z0break_list;
 
 	z0->prev = NULL;
@@ -103,6 +106,7 @@ void set_breakpoint(struct gdb_regs *regs, char* addr, int len) {
 	if( znxt ) znxt->prev = z0;
 		z0break_list = z0;
 		gdb_strcpy(outBuffer, "OK");
+
          return;
 }
 
@@ -137,7 +141,7 @@ void clear_breakpoint(struct gdb_regs *regs, char* addr, int len) {
 	if( z0->instr != 0xffffffff )
 	{
 		/* put the old instruction back  */
-		*(z0->address) = z0->instr;
+		*((unsigned int *)z0->address) = z0->instr;
 	}
 
 	/* Unlink entry */
@@ -310,7 +314,7 @@ void gdb_handle_exception (struct gdb_regs *gdbstub_regs) {
 	//	regs->cp0_epc += 4;
 	//}
 	//if(flag) { 
-	//	*((unsigned int *)regs->reg37) = 0x0;
+	//*((unsigned int *)regs->reg37 + 0x10) = 0xd;
 	//	flag = 0;
 	//}
 	
@@ -452,6 +456,7 @@ void gdb_handle_exception (struct gdb_regs *gdbstub_regs) {
 		putpacket(outBuffer);
 	}
 	ret:
+		flush_cache_gdb(0x80000000, 0x10000);		
 		return;
 
 }

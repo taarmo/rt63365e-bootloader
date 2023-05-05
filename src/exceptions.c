@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "regdef.h"
 #include "uart.h"
+#include "cache.h"
 
 extern u32 _irq_size;
 extern void* trampoline_irq;
@@ -54,7 +55,7 @@ void config_exceptions() {
 	mtc0(cause & 0xfffffc1f, C0_INTCTL, 1); //intctl
 
 	mfc0(status, C0_STATUS, 0);		//status
-	mtc0(status& ~0x400000, C0_STATUS, 0x0);
+	mtc0(status & ~0x400000, C0_STATUS, 0x0);
 
 	memcpy32((u32 *)0x80000180, &trampoline_exception, 64);
 	memcpy32((u32 *)0x80000200, &trampoline_irq, 64);
@@ -66,22 +67,6 @@ void config_exceptions() {
 	}
 
 	memcpy32((u32 *)0x80000000, exception_handlers, 32*4);
-
-	//config cache
-	//u32 a = (0x80000000+0x180) & 0xffffffe0; 		//-0x20
-	//u32 a = (0x80000000+0x180); 
-	u32 a = 0x80000000; 
-	//u32 b = (0x80000000+0x200- 1U) & 0xffffffe0;  //-0x20
-	//u32 b = (0x80000000+0x200);
-	u32 b = (0x80030000+0x200);
-	cache(a,0x15);
-	sync();
-	cache(a,0x10);
-	while(a != b){
-		a += 0x20;
-		cache(a,0x15);
-		sync();
-		cache(a,0x10);
-	}	
+	flush_icache_range(0x80000000, 0x200);
 }
 

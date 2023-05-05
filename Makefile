@@ -55,7 +55,7 @@ SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 #SOURCESC = src/main_ram.c src/config_uart.c src/print.c src/write_uart.c
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
-ALLOBJS    = obj/start.o obj/config_dmc.o obj/cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/spi.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o obj/elf_loader.o
+ALLOBJS    = obj/start.o obj/config_dmc.o obj/init_cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/cache.o obj/spi.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o obj/elf_loader.o
 
 PROJECT_INC_PATHS =
 

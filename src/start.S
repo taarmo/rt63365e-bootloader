@@ -129,12 +129,12 @@ memcpy:
 	lui	t1, 0x8000
 	lui	t2, 0x8002
 
-sincr:
+flushc:
 	cache	0x19, 0x0(t1)
 	sync	0x0
 	cache	0x10, 0x0(t1)
 	add	t1, t1, 0x20
-	bne	t2, t1, sincr
+	bne	t2, t1, flushc
 	nop	
 
 
