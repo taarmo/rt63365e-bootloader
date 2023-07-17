@@ -31,10 +31,7 @@ SECTIONS
 		_stext = .;
 		*(.text.init_main)
 		*(.text.main)
-		*(.text)
-		_sirq = .;
-		*(.text.irq)
-		_eirq = .;
+		*(.text.*)
 		. = ALIGN(16);
 		_etext = .;
 	} > RAM AT>FLASH
@@ -95,13 +92,13 @@ _init_size = SIZEOF(.init);
 _rodata_size = SIZEOF(.rodata);
 /*_text_size = _etext - _stext;*/
 _text_size = SIZEOF(.text);
-_irq_size = _eirq - _sirq;
 /*_data_size = _edata - _sdata;*/
 _data_size = SIZEOF(.data);
+/*_data_size = __bass_end - __bss_start */ 
+_bss_size = SIZEOF(.bss);
 
 _init_text_flash = _init_size + _rodata_size;
 _fin_text_flash = _init_text_flash + _text_size;
-
 _init_data_flash = _init_size + _rodata_size + _text_size;
 _fin_data_flash = _init_data_flash + _data_size;
 

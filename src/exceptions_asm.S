@@ -1,13 +1,12 @@
 #include "regdef.h"
 
 .extern exception_handler
+.extern exception_handlers
 .extern irq_handler
 
-.extern regs_ret
 .set noreorder
 .set noat
 
-.section .text.irq
 
 .macro save_context
 	subu	sp, sp, FR_SIZE
@@ -137,35 +136,24 @@ exception_dispatcher:
 	eret
 	nop
 
-.global irq_dispatcher
-irq_dispatcher:
-	save_context	
-	jal irq_handler
-	unsave_context
-	eret
-	nop
-
-.global trampoline_exception
-trampoline_exception:
-	mfc0	k1, C0_CAUSE
-	lui 	k0, 0x8000
-	andi	k1, k1, 0x7c
-	addu	k0, k0, k1
-	lw	k0, 0x0(k0)
-	jr	k0
-	nop
-	jr	ra
-	nop
-
 .global trampoline_irq
 trampoline_irq:
 	mfc0	k1, C0_CAUSE
 	andi	k1, k1, 0xff00
 	srl	k1, k1, 10
 	subu	k1, k1, 1
-	lui	k0, 0x8002
-	jr	k0
+	move	a0, k1
+	jal	irq_handler
 	nop
-	jr	ra
+
+.global trampoline_exception
+trampoline_exception:
+	mfc0	k1, C0_CAUSE
+	la 	k0, exception_handlers
+	andi	k1, k1, 0x7c
+	addu	k0, k0, k1
+	lw	k0, 0x0(k0)
+	nop
+	jr	k0
 	nop
 

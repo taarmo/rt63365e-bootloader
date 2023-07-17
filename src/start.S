@@ -28,9 +28,7 @@
 	li	t4, 0xea00fde8
 	sw	t4, 0x2c(t3)
 	nop
-
 .endm sys_uart_init
-
 
 
 .global __start
@@ -146,8 +144,8 @@ flushc:
 	or	t4, t4, t5
 	sw	t4, 0x0(t3)
 
-	li	t5, 'T'
-	jal	disp_character
+	//li	t5, 'T'
+	//disp_character
 	nop
 
 	//jmp ram
@@ -170,3 +168,4 @@ wait:
 	sb	t5, 0x03(t3)
 	jr	ra
 	nop
+

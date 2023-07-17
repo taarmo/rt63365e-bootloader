@@ -7,8 +7,7 @@ import os
 def auto_int(x):
     return int(x,0)
 
-parser = argparse.ArgumentParser(description="Just an example",
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-s", dest='inject_shellcode',help="inject shellcode mode")
 parser.add_argument("-m", type=auto_int, nargs=3, dest='move',help="src_val1<-offset_init src_val2<-offset_fin val3<-dest")
 parser.add_argument("-f", type=auto_int, dest='flash',help="flash")
@@ -67,9 +66,9 @@ if args.clean:
     clean()
     open("prueba.bin","wb").write(dest)
 if args.flash:
-    os.system("lzma 21D8.bin")
+    os.system("./lzma_app 21D8.bin")
     print("Comprimido\n")
-    os.system("dd if=21D8.bin.lzma of=funciona_sin_purria bs=1 seek=8664 conv=notrunc")
+    os.system("dd if=21D8.bin.lzma of=router_firmware_winbond.bin bs=1 seek=8664 conv=notrunc")
     print("Imagen creada\n")
 
 
