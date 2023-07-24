@@ -3,13 +3,15 @@ import struct
 import time
 
 from uart_interface import *
-usbuart = serial.Serial('/dev/ttyUSB1', 115200)
+usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
 
-print("58: " + str(hex(p.read32(0xbfb00058))))
-print("64: " + str(hex(p.read32(0xbfb00064))))
-print("8c: " + str(hex(p.read32(0xbfb0008c))))
+#p.writememflash(0x3000)
+i = 0
+while i < 0x100:
+    print(str(hex(p.read32(0xbfc03000 + i))))
+    i+=4
 
 
 #while(i < limit):

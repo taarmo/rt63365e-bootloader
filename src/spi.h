@@ -16,7 +16,7 @@ struct t_comm{
 	u8 rx;
 };
 
-u32 send_cmd(struct t_comm ,u32 addr,u32 data);
-void spi_write(u8 op,u32 to,u8 data[256],u32 size);
+u32 send_cmd(struct t_comm , u32, u32);
+void spi_write(u8, u32, u8 *, u32);
 
 #endif

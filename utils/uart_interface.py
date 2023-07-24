@@ -67,11 +67,11 @@ class ProxyUart:
         return reply
 
     def write32(self,addr,data):
-        self.request(self.__P_WRITE32,addr,data)
+        self.request(self.__P_WRITE32,addr, data)
     def write16(self,addr,data):
-        self.request(self.__P_WRITE16,addr,data)
+        self.request(self.__P_WRITE16,addr, data)
     def write8(self,addr,data):
-        self.request(self.__P_WRITE8,addr,data)
+        self.request(self.__P_WRITE8,addr, data)
     def read32(self,addr):
         return self.request(self.__P_READ32, addr)
     def read16(self,addr):
@@ -84,7 +84,9 @@ class ProxyUart:
         return self.request(self.__P_TIMER_CMP)
     def xxd(self,addr):
         return self.request(self.__P_XXD, addr)
-    def writemem(self,addr,data):
-        return self.iface.writemem(self.__P_WRITE_MEM_RAM,addr,data)
+    def writememram(self,addr,data):
+        return self.iface.writemem(self.__P_WRITE_MEM_RAM,addr, data)
+    def writememflash(self,addr):
+        return self.request(self.__P_WRITE_MEM_FLASH, addr)
 
 

@@ -26,5 +26,5 @@ void config_timer() {
 //INT timer 5
 void timer_handler() {
 	cuenta++;	
-	uart_printf("Hola su cuenta es: %d\n\r",cuenta);
+	//uart_printf("Hola su cuenta es: %d\n\r",cuenta);
 }

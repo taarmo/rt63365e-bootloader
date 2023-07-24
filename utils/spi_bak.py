@@ -108,7 +108,7 @@ def erase_one_block(addr):
     finished = False
     opcode = stm_opcodes[ERASE][0]
     temp = ((addr << 8) | (opcode))  
-    send_cmd(WREN,0x0) 
+    send_cmd(WREN,0x0,0x0,0x0) 
     while(reg := p.read32(0xbfbc0000) & SPI_CTL_BUSY):
         pass
     p.write32(0xbfbc0004,temp)
@@ -133,16 +133,16 @@ def erase_one_block(addr):
 #buf = [0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x20,0x21,0x22,0x23]
 buf = [0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27]
 
-send_cmd(WREN,0x0,buf,0x0)
-send_cmd(PAGE_PGRM,0x3018,buf,len(buf))
+
 #send_cmd(WREN,0x0,buf,0x0)
-#send_cmd(ERASE,0x3000,buf,0x0)
-
-i=0xbfc03000
-limit = i+0x100
-while(i < limit):
-    print(str(hex(i)) + ": " + str(hex(p.read32(i))))
-    i+=4
+send_cmd(PAGE_PGRM,0x3000,buf,len(buf))
+#erase_one_block(0x0)
 
 
+#i=0xbfc00000
+#limit = i+0x100
+#while(i < limit):
+#    print(str(hex(i)) + ": " + str(hex(p.read32(i))))
+#    i+=4
+#
 

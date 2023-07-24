@@ -17,13 +17,11 @@ READ = 0x3
 WR_DISABLE = 0x4
 RDSR = 0x5
 WREN = 0x6
-ERASE = 0x7 
+ERASE = 0x7
 
 stm_opcodes = [[NOP,0,0],[WRR,2,0],[PAGE_PGRM,4,0],[READ,8,4],[WR_DISABLE,1,0],[RDSR,1,1],[WREN,1,0],[0x20,4,0]]
 
 def spi_write(to,data,size):
-    if(size <= 0 and size >= 256):
-        return
     n_bytes_data = size-1 
     remaindering = n_bytes_data % 4
 
@@ -63,7 +61,7 @@ def spi_write(to,data,size):
         #write32(0xbfbc002c,0x00000000);
         #write32(0xbfbc0028,reg_value);
 
-        #p.write32(0xbfbc0000, reg)
+    p.write32(0xbfbc0000, reg)
         #p.write32(0xbfbc0038,0x1)
 
 #def spi_write(to,data,size):
@@ -154,7 +152,7 @@ def erase_one_block(addr):
     finished = False
     opcode = stm_opcodes[ERASE][0]
     temp = ((addr << 8) | (opcode))  
-    send_cmd(WREN,0x0) 
+    send_cmd(WREN,0x0,0x0) 
     while(reg := p.read32(0xbfbc0000) & SPI_CTL_BUSY):
         pass
     p.write32(0xbfbc0004,temp)
@@ -169,22 +167,23 @@ def erase_one_block(addr):
 
 #CONTENIDO 0xbfbc0028 --> 0x68880
 
-p.write32(0xbfbc0028,0x68880)# yep
-p.write32(0xbfbc002c,0x0)# yep
+#p.write32(0xbfbc0028,0x68880)# yep
+#p.write32(0xbfbc002c,0x0)# yep
 #
 
-buf = [0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x20,0x21,0x22,0x23,0x24,0x00]
+buf = [0xf,0xf,0xf,0xf,0xf,0xf,0xf,0xf,0xf,0xf]
 
-#send_cmd(WREN,0x0,buf,0x0)
-#spi_write(0x3050,buf,len(buf))
-#send_cmd(WREN,0x0,buf,0x0)
-#send_cmd(ERASE,0x3000,buf,0x0)
+send_cmd(WREN,0x0,0x0)
+while 1:
+    spi_write(0x3000,buf,len(buf))
+#send_cmd(WREN,0x0,0x0)
+#erase_one_block(0x0)
 #
-i=0xbfc03000
-limit = i+0x100
-while(i < limit):
-    print(str(hex(i)) + ": " + str(hex(p.read32(i))))
-    i+=4
-
+#i=0xbfc00000
+#limit = i+0x100
+#while(i < limit):
+#    print(str(hex(i)) + ": " + str(hex(p.read32(i))))
+#    i+=4
+#
 
 
