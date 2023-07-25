@@ -59,8 +59,6 @@ void uart_debug_process() {
 			size = req.args[1];
 			uart_read(input, size);
 			flash(addr, input, size);
-			while (1)
-				xxd(input, size, 8);
 			uart_write((u8 *)&size, 4);
 			//uart_write((u8 *)&size, 4);
 			//uart_read(jump_zone,size);

@@ -46,21 +46,21 @@ void erase(u32 addr) {
 }
 
 void flash(u32 addr, u8 *buf, u32 size) {
-	if ((addr + size) > 0x7f0000) return;
+        if ((addr + size) > 0x7f0000) return;
 
-	u32 last_page = size%0x1000;
-	u32 pages = size/0x1000;
-	u32 p = 0x0;
-	for(u32 i = 0; i < pages + (last_page > 0); i+=1) {
-		erase(addr+(i*0x1000));	
-	}
-	u32 limit = pages*0x1000;
-
-	while (p < limit && pages) {
-		page_pgrm(addr+p, buf, 256);
-		p+=256;
-		buf+=256;
-	}
-	page_pgrm(addr+p, buf+p, last_page);
+        u32 pages = size/0x1000;
+        u32 last_page = size%0x1000;
+        u32 last_write = size%32;
+        u32 p = addr;
+        for(u32 i = 0; i < pages + (last_page > 0); i+=1) {
+                erase(addr+(i*0x1000));
+        }
+	u32 length = ((addr + size)>>5)<<5;
+	while (p < length) {
+                page_pgrm(p, buf, 32);
+                p+=32;
+                buf+=32;
+        }
+        page_pgrm(p, buf, last_write);
 
 }

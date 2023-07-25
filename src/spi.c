@@ -27,7 +27,7 @@ u32 send_cmd(struct t_comm comm,u32 addr,u32 data) {
 }
 
 void spi_write(u8 op, u32 to, u8 *data, u32 size){
-	if (!size || size >256) return;
+	if (!size || size > 33) return;
 	
 	u32 n_bytes_data = size-1;
 	u8 remainder = n_bytes_data % 4;
@@ -58,24 +58,10 @@ void spi_write(u8 op, u32 to, u8 *data, u32 size){
 
 	val = (val & ~SPI_CTL_TX_RX_CNT_MASK) | n_bytes_data | SPI_ENABLE | (op << 24);
 	write32((u32 *)0xbfbc0000, val);
-
-	//u32 i = 0;
-	//while (i < ((n_bytes_data>>2)<<2)) {
-	//	write32((u32 *)0xbfbc0008 + i, *(u8 *)((u32)data + i + 3) << 16 | *(u8 *)((u32)data + i + 2) << 8 | *(u8 *)((u32)data + i + 1) | *(u8 *)((u32)data + i + 4) << 24);
-	//	i+=4;
-	//}
-
-	//if (remainder == 1) {
-	//	write32((u32 *)0xbfbc0008+i, *(u8 *)((u32)data + i + 1));
-	//} else if(remainder == 2) {
-	//	write32((u32 *)0xbfbc0008+i, *(u8 *)((u32)data + i + 2) << 8 | *(u8 *)((u32)data + i + 1));
-	//} else if(remainder == 3) {
-	//	write32((u32 *)0xbfbc0008+i, *(u8 *)((u32)data + i + 3) << 16 | *(u8 *)((u32)data + i + 2) << 8 | *(u8 *)((u32)data + i + 1));
-	//}
-	//write32((u32 *)0xbfbc0004, (to&0x00ffffff) << 8 | *data);
-
-	//val = (val & ~SPI_CTL_TX_RX_CNT_MASK) | n_bytes_data | SPI_ENABLE | (op << 24);
-	//write32((u32 *)0xbfbc0000, val);
+	while ((val = read32((u32 *)0xbfbc0000))& SPI_CTL_BUSY);
+	write32((u32 *)0xbfbc002c, 0x0);
+	write32((u32 *)0xbfbc0028, reg_value );
+	
 }
 
 
