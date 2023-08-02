@@ -6,10 +6,10 @@
 
 struct request{
 	u32 opcode;
-	u32 args[3];
+	u32 args[4];
 };
 
-struct reply{
+struct reply {
 	u32 val;
 };
 
@@ -21,10 +21,14 @@ enum type_opcode{
 	READ32_UART,
 	READ8_UART,
 	TIMER_COUNT,
-	TIMER_CMP,
-	XXD,
+	JUMP,
+	LOAD_ELF,
+	LOAD_KERNEL,
 	WRITE_MEM_RAM,
-	WRITE_MEM_FLASH
+	WRITE_MEM_FLASH,
+	LCD,
+	MALLOC,
+	DOOM
 };
 
 #endif

@@ -22,20 +22,16 @@ endef
 RES = main.out
 
 GCC_PATH = /usr/bin/
-LINKER_SCRIPT     = ./rt63365e.ld 
+LINKER_SCRIPT = ./rt63365e.ld 
 
-CCPP = $(GCC_PATH)mips-linux-gnu-g++
 CC = $(GCC_PATH)mips-linux-gnu-gcc
 OBJCOPY = mips-linux-gnu-objcopy
 
 MIPS_FLAGS = -march=mips32r2
 
-#CFLAGS = -O2 -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -mno-abicalls -fno-PIC -fno-PIE -fno-stack-protector -fomit-frame-pointer -ffreestanding -ffunction-sections -fdata-sections -nostdinc -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) 
-
 CFLAGS = -O2 -EB $(MIPS_FLAGS) -std=c11 -fno-builtin -Wall -pedantic -mno-abicalls -fno-PIC -fno-PIE -fno-stack-protector -fno-omit-frame-pointer -ffreestanding -nostdinc -isystem sysinc -isystem $(shell $(CC) --print-file-name=include) -Wno-multichar 
 
 
-#CPPFLAGS = -Wall -pedantic
 LD_FLAGS = -nostdlib -static
 
 SRC      = src
@@ -43,30 +39,44 @@ LIB      = lib
 OBJ      = obj
 MKDIR	 = mkdir -p
 
-#ifdef DEBUG
-CFLAGS += -g
-#else
-#	CFLAGS += -O3
-#endif
+ifdef DEBUG
+	CFLAGS += -g -DDEBUG
+else
+	CFLAGS += -DNODEBUG
+endif
+
+ifdef RAM64
+	CFLAGS += -DRAM64
+else
+	CFLAGS += -DRAM32
+endif
 
 MKDIR = mkdir -p
-#SOURCESCPP = $(shell find $(SRC)/ -type f -iname *.cpp)
 SOURCESC = $(shell find $(SRC)/ -type f -iname *.c)
 #SOURCESC = src/main_ram.c src/config_uart.c src/print.c src/write_uart.c
 SOURCESS = $(shell find $(SRC)/ -type f -iname *.S)
 
-ALLOBJS    = obj/start.o obj/config_dmc.o obj/init_cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/cache.o obj/spi.o obj/flash.o obj/utils.o obj/utils_asm.o obj/exceptions.o obj/exceptions_asm.o obj/timer.o obj/elf_loader.o
 
-PROJECT_INC_PATHS =
+LIBS = $(LIB)/minlzlib/minlzlib.a $(LIB)/dlmalloc/malloc.a 
+ALLOBJS = obj/start.o obj/config_dmc.o obj/init_cache.o obj/init_main.o obj/main.o obj/uart.o obj/vsprintf.o obj/uart_debug.o obj/cache.o obj/spi.o obj/flash.o obj/utils.o obj/exceptions.o obj/exceptions_asm.o obj/timer.o obj/elf_loader.o obj/gpio.o obj/lcd.o 
 
-LIBS = $(LIB)/gdbstub/gdbstub.a $(LIB)/minlzlib/minlzlib.a
-#LIBS = 
+
+ifdef DOOM
+	LIBS += $(LIB)/doom/doom.a 
+else
+endif
+
+ifdef GDBSTUB
+	LIBS += $(LIB)/gdbstub/gdbstub.a 
+else
+endif
+
 
 #ALLOBJS    = $(foreach F,$(SOURCESS) ,$(call S2O,$(F)))
 #ALLOBJS    += $(foreach F,$(SOURCESC) $(SOURCESCPP),$(call C2O,$(F)))
 SUBDIRS    = $(shell find $(SRC) -type d)
 OBJSUBDIRS = $(patsubst $(SRC)%,$(OBJ)%,$(SUBDIRS))
-PROJECT_INC_PATHS = -I$(SRC) -I$(LIB)/minlzlib 
+PROJECT_INC_PATHS = -I$(SRC) -I$(LIB)/minlzlib -I$(LIB)/minlzlib/src -I$(LIB)/doom/src -I$(LIB)/gdbstub/src -I$(LIB)/dlmalloc/src 
 
 
 .PHONY: info
@@ -77,7 +87,6 @@ $(RES): $(OBJSUBDIRS) $(ALLOBJS)
 	$(MAKE) -C lib 
 	$(CC) $(LD_FLAGS) -T$(LINKER_SCRIPT) $(ALLOBJS) $(LIBS) -o $(RES) 
 
-#$(foreach F,$(SOURCESCPP),$(eval $(call COMPILE,$(CCPP),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(CPPFLAGS) $(PROJECT_INC_PATHS))))
 $(foreach F,$(SOURCESS),$(eval $(call COMPILE,$(CC),$(call S2O,$(F)),$(F),$(call C2H,$(F)),$(CFLAGS))))
 $(foreach F,$(SOURCESC),$(eval $(call COMPILE,$(CC),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(CFLAGS) $(PROJECT_INC_PATHS))))
 

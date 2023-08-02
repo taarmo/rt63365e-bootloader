@@ -1,0 +1,2 @@
+
+void play_doom();

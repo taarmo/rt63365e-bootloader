@@ -2,6 +2,7 @@
 #include "regdef.h"
 #include "uart.h"
 #include "cache.h"
+#include "uart_debug.h"
 
 extern void* trampoline_irq;
 extern void* trampoline_exception;
@@ -9,20 +10,22 @@ extern void* exception_dispatcher;
 u32 exception_handlers[32];
 void (*irq_handlers[32])();
 
-
 void exception_handler(struct reg_struct *reg_context) {
-	u32 status,cause,epc,badaddr;
+	u32 status, cause, epc, badaddr;
 	mfc0(status, C0_STATUS, 0);
 	mfc0(cause, C0_CAUSE, 0);
 	mfc0(epc, C0_EPC, 0);
 	mfc0(badaddr, C0_BADVADDR, 0);
+	//while (1) {
 	uart_printf("excepcion\n\r");
 	uart_printf("pc es 0x%x \n\r", reg_context->reg31);
+	uart_printf("sp es 0x%x \n\r", reg_context->reg29);
 	uart_printf("status es 0x%x \n\r", status);
 	uart_printf("cause es 0x%x \n\r", cause);
 	uart_printf("epc es 0x%x \n\r", epc);
 	uart_printf("badaddr es 0x%x \n\r", badaddr);
-	while(1);
+	//}
+	jump((void *)uart_debug_process);
 }
 
 void irq_handler(u32 irqn) {
@@ -47,9 +50,9 @@ void config_exceptions() {
 	mfc0(status, C0_STATUS, 0);		//status
 	mtc0(status & ~0x400000, C0_STATUS, 0x0);
 
-	memcpy32((u32 *)0x80000180, &trampoline_exception, 64);
+	memcpy((u32 *)0x80000180, &trampoline_exception, 64);
 
-	for(u32 i=1;i<32;i++){
+	for(u32 i = 1;i < 32;i++){
 		set_except_vector(i, &exception_dispatcher);
 	}
 	flush_icache_range(0x80000180, 0x200);
@@ -57,11 +60,11 @@ void config_exceptions() {
 
 
 void intPrioritySet(u32 source, u32 level) {
-	u32 IPRn,IPLn;
+	u32 IPRn, IPLn;
 	u32 word;
     
-	IPRn=level/4;
-	IPLn=level%4;
+	IPRn = level/4;
+	IPLn = level%4;
 	word = read32((u32 *)(0xbfb40010+IPRn*4));
 	word |= source << ((3-IPLn)*8);
 	write32((u32 *)(0xbfb40010+IPRn*4), word);
@@ -98,3 +101,4 @@ void init_irq() {
 	set_irq_priority();
 	irq_setup();
 }
+

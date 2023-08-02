@@ -15,20 +15,21 @@ struct t_comm stm_opcodes[] = {
 	{0x20,4,0},   //erase
 	{0x30,1,0}    //cslr
 };
+
 void cslr() {
-	send_cmd(stm_opcodes[CSLR], 0, 0);
+	spi_write_comm(stm_opcodes[CSLR], 0, 0);
 }
 
 void write_enable() {
-	send_cmd(stm_opcodes[WR_ENABLE], 0x0, 0x0);
+	spi_write_comm(stm_opcodes[WR_ENABLE], 0x0, 0x0);
 }
 
 void write_status_register(u8 status, u8 data) {
-	send_cmd(stm_opcodes[WRR], status, data);
+	spi_write_comm(stm_opcodes[WRR], status, data);
 }
 
 u16 read_statusreg() {
-	return send_cmd(stm_opcodes[RDSR], 0x0, 0x0);
+	return spi_write_comm(stm_opcodes[RDSR], 0x0, 0x0);
 }
 
 void page_pgrm(u32 addr, u8 *buf, u32 size) {
@@ -40,7 +41,7 @@ void page_pgrm(u32 addr, u8 *buf, u32 size) {
 
 void erase(u32 addr) {
 	write_enable();
-	send_cmd(stm_opcodes[ERASE], addr, 0x0);
+	spi_write_comm(stm_opcodes[ERASE], addr, 0x0);
 	while (read_statusreg() & 0x1);
 	//write32((u32 *)0xbfbc0038,0x1);
 }

@@ -8,7 +8,7 @@
 	.set	noreorder
 	.set	noat
 
-	sub 	sp, FR_SIZE
+	//sub 	sp, FR_SIZE
 
 	la	k0, fgdb_regs
 	//sw	zero, FR_FIR(k0) 
@@ -128,7 +128,7 @@
 	mtc0	k1, C0_INDEX 
 	sync.p
 
-	add 	sp, FR_SIZE
+	//add 	sp, FR_SIZE
 
 .endm	
 

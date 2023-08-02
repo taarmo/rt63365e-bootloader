@@ -5,16 +5,12 @@ usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
 
-#f = open("../../router_firmware_winbond.bin","rb")
-f = open("a.txt","rb")
-a = f.read()
+f = open("../main.out.bin","rb")
+size = f.read()
+f.close()
 
-b = 0x3000
-b = p.writememram(b,a)
-print(hex(b))
+addr = 0x0
+ret = p.writememram(addr, size)
+print(hex(ret))
 
 
-#limit = b + len(a)
-#while(b<limit): 
-#    print(hex(p.read32(b)))
-#    b+=4

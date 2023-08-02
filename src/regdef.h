@@ -156,10 +156,10 @@
 #define C0_PRID		$15
 #define C0_EBASE	$15//,1 
 #define C0_CONFIG	$16
-#define C0_CONFIG0	$16,0
-#define C0_CONFIG1	$16,1
-#define C0_CONFIG2	$16,2
-#define C0_CONFIG3	$16,3
+#define C0_CONFIG0	$16//,0
+#define C0_CONFIG1	$16//,1
+#define C0_CONFIG2	$16//,2
+#define C0_CONFIG3	$16//,3
 #define C0_LLADDR	$17
 #define C0_WATCHLO	$18
 #define C0_WATCHHI	$19

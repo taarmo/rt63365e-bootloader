@@ -31,7 +31,7 @@ def assembly(MIPS_CODE):
 def inject_shellcode():
     global MIPS_CODE
     global dest
-    dest  = bytearray(open("/home/tarmo/Desktop/routercito_fiu_fiu/bak/backup","rb").read())
+    dest  = bytearray(open("../bak/backup","rb").read())
     MIPS_BYTECODE,lenght = assembly(MIPS_CODE)
     list_offset = [0x84]
     for i in list_offset:
@@ -39,8 +39,8 @@ def inject_shellcode():
 
 def move():
     global dest
-    source  = bytearray(open("/home/tarmo/Desktop/routercito_fiu_fiu/main.out.bin","rb").read())
-    dest  = bytearray(open("/home/tarmo/Desktop/prueba.bin","rb").read())
+    source  = bytearray(open("../main.out.bin","rb").read())
+    dest  = bytearray(open("../prueba.bin","rb").read())
     source = source[args.move[0]:args.move[1]] 
     lenght = args.move[1] - args.move[0]
     dest = dest[:args.move[2]] + source + dest[args.move[2]+lenght:]
@@ -49,7 +49,7 @@ def clean():
     MIPS_CODE = """nop
     """
     global dest
-    dest  = bytearray(open("/home/tarmo/Desktop/funciona_sin_purria.bin","rb").read())
+    dest  = bytearray(open("funciona.bin","rb").read())
     lenght = (args.clean[1]-args.clean[0])//4
     MIPS_CODE = MIPS_CODE*lenght
     MIPS_BYTECODE,l = assembly(MIPS_CODE)

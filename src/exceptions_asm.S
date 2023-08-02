@@ -62,6 +62,10 @@
 
 	mfc0	k0, C0_INDEX
 	sw	k0, FR_CP0_INDEX(sp)
+
+	move	k1, sp
+	move	a0, k1
+	
 .endm
 
 .macro unsave_context
@@ -138,12 +142,15 @@ exception_dispatcher:
 
 .global trampoline_irq
 trampoline_irq:
+	save_context	
 	mfc0	k1, C0_CAUSE
 	andi	k1, k1, 0xff00
 	srl	k1, k1, 10
 	subu	k1, k1, 1
 	move	a0, k1
 	jal	irq_handler
+	unsave_context
+	eret
 	nop
 
 .global trampoline_exception

@@ -2,11 +2,46 @@
 #include "regdef.h"
 #include "utils.h"
 #include "uart.h"
+#include "gpio.h"
 
 extern inline void write32(u32 *addr,u32 val);
 extern inline void write8(u32 *addr,u8 val);
 extern inline u32 read32(u32 *addr);
 extern inline u32 read8(u32 *addr);
+
+void delay_us(u32 t) {
+	u32 time_init, time_end;
+	u32 aux;
+	//u32 limit = t << 8; 1.1us
+	u32 limit = t*250; 
+	mfc0(time_init, C0_COUNT, 0);
+	mfc0(time_end, C0_COUNT, 0);
+	if (time_init > time_end) {
+		mfc0(aux, C0_COUNT, 0);
+		while(aux >= time_init) {
+			mfc0(aux, C0_COUNT, 0);
+		}
+		mfc0(time_init, C0_COUNT, 0);
+	}
+	mfc0(time_end, C0_COUNT, 0);
+	while ((time_end - time_init) < limit) {
+		mfc0(time_end, C0_COUNT, 0);
+	}
+}
+
+void flush_and_reboot() {
+	jump(0x81f00000);
+}
+
+//debug_printf(fmt, ##__VA_ARGS__);
+
+void * memcpy(void *dest, void *src, size_t len) {
+        char *d = dest;
+        const char *s = src;
+        while (len--)
+                *d++ = *s++;
+        return dest;
+}
 
 
 u32 memcmp(const void *str1, const void *str2, size_t count) {

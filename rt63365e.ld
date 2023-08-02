@@ -1,7 +1,8 @@
 
 MEMORY
 {
-	RAM (rwx) : ORIGIN = 0x80000300, LENGTH = 32M 
+	RAM1 (rwx) : ORIGIN = 0x80000000, LENGTH = 30M 
+	RAM2 (rwx) : ORIGIN = 0x81e00000, LENGTH = 2M 
 	FLASH (rx) : ORIGIN = 0xbfc00000, LENGTH = 8M 
 }
 
@@ -12,55 +13,62 @@ ENTRY(__start)
 SECTIONS
 {
 	.init : {
+		. = ALIGN(32);
 		_inits_sym = .;
 		*(.init)
 		*(.init.*)
-		. = ALIGN(16);
 		_inite_sym = .;
+		. = ALIGN(32);
 	} > FLASH
 
 	.rodata : {
-		__rodata_start = .;
+		. = ALIGN(32);
+		_rodata_start = .;
  	   	*(.rodata)
  	   	*(.rodata.*)
-		. = ALIGN(16);
-		__rodata_end = .;
- 	 } > FLASH		/* read-only data */	
+		_rodata_end = .;
+		. = ALIGN(32);
+ 	 } > RAM2 AT > FLASH		/* read-only data */	
 
 	.text : {
+		. = ALIGN(32);
 		_stext = .;
 		*(.text.init_main)
 		*(.text.main)
 		*(.text.*)
-		. = ALIGN(16);
 		_etext = .;
-	} > RAM AT>FLASH
+		. = ALIGN(32);
+	} > RAM2 AT>FLASH
 
 	.data : { 
+		. = ALIGN(32);
 		_sdata = .;
 		*(.data.*) 
-		_gp = ALIGN(16);
+		_gp = ALIGN(32);
 		*(.data) 
 		_edata = .;
-	} > RAM	AT>FLASH	/* initialized data */
+		. = ALIGN(32);
+	} > RAM2 AT>FLASH	/* initialized data */
 
 	.bss : { 
-		__bss_start = .;
+		. = ALIGN(32);
+		_bss_start = .;
 		*(.bss) 
 		*(.bss.*) 
 		*(.sbss)
 		*(.sbss*)
-		. = ALIGN(16);
-		__bss_end = .;
-	} > RAM			/* cleared-to-zero data */
+		_bss_end = .;
+		. = ALIGN(32);
+	} > RAM2	/* cleared-to-zero data */
 
 	.stack : {
-		__stack_end = .;
+		. = ALIGN(32);
+		_stack_end = .;
 		. = . + __stack_size;
 		*(.stack)
-		. = ALIGN(16);
-		__stack_addr = .;
-	} > RAM
+		_stack_addr = .;
+		. = ALIGN(32);
+	} > RAM2
 
 
 	/*
@@ -97,8 +105,11 @@ _data_size = SIZEOF(.data);
 /*_data_size = __bass_end - __bss_start */ 
 _bss_size = SIZEOF(.bss);
 
+_init_rodata = _init_size;
 _init_text_flash = _init_size + _rodata_size;
 _fin_text_flash = _init_text_flash + _text_size;
 _init_data_flash = _init_size + _rodata_size + _text_size;
 _fin_data_flash = _init_data_flash + _data_size;
+
+_size_bootloader_ram = _rodata_size + _text_size + _data_size; 
 

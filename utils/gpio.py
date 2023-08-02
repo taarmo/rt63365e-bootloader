@@ -6,6 +6,11 @@ usbuart = serial.Serial('/dev/ttyUSB0', 115200)
 uartinterface = UartInterface(usbuart,False)
 p = ProxyUart(uartinterface,False)
 
+class State:
+    ON = 0 
+    OFF = 1 
+
+state = State()
 
 led1 = 0xbfb00080
 led2 = 0xbfb00834 #coleccion de leds
@@ -19,8 +24,9 @@ UNK = GPIO_BASE+0x20
 #p.write32(led1,0x0)
 #p.write32(led2,0x1000000)
 #p.write32(led2,0x0)
-#p.write32(CTRL,0x10000)
-#p.write32(DATA,0x13)
+#p.write32(CTRL,0x10100)
+def control_dcx(state):
+    p.write32(led1, state << 5)  
 
 def config_gpio(pin):
     p.write32(CTRL, 1 << ((pin & 0xf) << 1) | p.read32(CTRL));
@@ -28,16 +34,20 @@ def config_gpio(pin):
 
 def gpiooff(pin):
     p.write32(DATA, 1 << (pin & 0x1f) | p.read32(DATA))
-    time.sleep(0.5)
     
 def gpioon(pin):
     p.write32(DATA, ~(1 << (pin & 0x1f)) & p.read32(DATA))
-    time.sleep(0.5)
 
 
-# 4 es el fucking numero de la bestia yeah!
-config_gpio(4)
-gpiooff(4)
+#config_gpio(4)
+
+#while 1:
+#    p.write32(led2,0x1000000)
+#    p.write32(led2,0x0)
+#
+#pin = state.ON
+#control_dcx(pin)
+#pin ^=1
 
 print("CTRL " + str(hex(p.read32(CTRL))))
 print("DATA " + str(hex(p.read32(DATA))))

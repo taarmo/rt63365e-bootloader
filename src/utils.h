@@ -10,8 +10,9 @@
 void show_regs();
 void memcpy32(void *dst, void *src, size_t size);
 u32 memcmp(const void *str1, const void *str2, size_t count);
-void *memcpy(void *dest, const void *src, size_t len);
+void *memcpy(void *dest, void *src, size_t len);
 void *memset(void *s, int c,  unsigned int len);
+void delay_us(u32 t);
 
 void xxd(u8 *arr, u32 size, u32 col);
 u32 crc32_compute(u8 const * p_data, u32 size, u32 const * p_crc);
@@ -36,9 +37,9 @@ inline u32 read8(u32 *addr) {
 	return val;
 }
 
-	
-#define jump(addr)									\
-	__asm__ volatile("j\t " #addr);
+inline void jump(void *addr) {
+	((void(*)()) addr)();
+}
 
 #define mfc0(source, reg, val)								\
 	if(val == 0){									\
