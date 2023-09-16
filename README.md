@@ -26,7 +26,7 @@ make
 
 ```
 cd utils
-python3 flash_factory_loader.py
+python3 flash_factory_loader_hg532s.py
 ```
 
 Connnect the ethernet wire port 1, power on the router
@@ -42,9 +42,9 @@ Wait the Bienvenido and Reset the router
 
 ### Changing the bootloader
 
-In utils/flash.py, change 
+In utils/flash.py, change "main.out.bin"
 ```
-f = open("../../0tofinbootloader","rb")
+f = open("../main.out.bin","rb")
 #DONT CHANGE ADDR IN THE SCRIPT!!!
 ```
 and
