@@ -114,6 +114,8 @@
 	mtc0	k1, C0_BADVADDR
 	sync.p
 	lw	k1, FR_CAUSE(k0) 
+	ori     k1, k1, 0x300    
+        xori    k1, 0x300
 	mtc0	k1, C0_CAUSE
 	sync.p
 	lw	k1, FR_EPC(k0) 

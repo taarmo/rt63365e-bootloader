@@ -38,10 +38,8 @@ void timer_handler() {
 
 //INT TIMER 30
 void high_precision_timer() {
-	u32 config3;
-	mfc0(config3, C0_CONFIG3, 3);
 	mtc0(0x10000, C0_COMPARE, 0);
 	tick++;
-	uart_printf("Hola\n\r");
+	//uart_printf("tick: %x\n\r", tick);
 }
 

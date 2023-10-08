@@ -116,10 +116,12 @@
 	mtc0	k0, C0_BADVADDR
 	sync.p
 	lw	k0, FR_CAUSE(sp) 
+	ori	k0, k0, 0x300
+	xori	k0, 0x300
 	mtc0	k0, C0_CAUSE
 	sync.p
 	lw	k0, FR_EPC(sp) 
-	add	k0, 0x4
+	//add	k0, 0x4
 	mtc0	k0, C0_EPC
 	sync.p
 	lw	k0, FR_CP0_INDEX(sp) 
